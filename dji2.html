@@ -1071,7 +1071,7 @@ function renderPlaylist() {
       trackDiv.classList.add('next-track');
     }
     
-    trackDiv.addEventListener('click', () => loadTrackToDeck(track, currentAssignment));
+    trackDiv.addEventListener('touchstart', () => loadTrackToDeck(track, currentAssignment));
     container.appendChild(trackDiv);
   });
 }
@@ -1934,7 +1934,7 @@ $('playBtn1').addEventListener('touchstart', () => {
   if(!ytPlayer1) return;
   safeIsPlaying(ytPlayer1) ? ytPlayer1.pauseVideo() : ytPlayer1.playVideo();
 });
-$('playBtn2').addEventListener('click', () => {
+$('playBtn2').addEventListener('touchstart', () => {
   if(!ytPlayer2) return;
   safeIsPlaying(ytPlayer2) ? ytPlayer2.pauseVideo() : ytPlayer2.playVideo();
 });
@@ -1966,8 +1966,8 @@ document.querySelectorAll('.loop-length-btn').forEach(btn => {
 });
 
 /* AUTO-MIX BUTTONS */
-$('autoMixToggle').addEventListener('click', toggleAutoMix);
-$('nextTrackBtn').addEventListener('click', manualNextTrack);
+$('autoMixToggle').addEventListener('touchstart', toggleAutoMix);
+$('nextTrackBtn').addEventListener('touchstart', manualNextTrack);
 
 /* PLAYLIST BUTTONS */
 $('assignDeck1').addEventListener('touchstart', () => {
@@ -2043,7 +2043,7 @@ document.addEventListener('DOMContentLoaded', () => {
 ///SeArCh
 
 const searchButton = document.getElementById("searchButton");
-searchButton.addEventListener('touchstart', function(event) {
+searchButton.addEventListener('touchstart', () => { 
 //////////////////youtube api
 
  const searchQuery = document.getElementById('searchQuery').value;
@@ -2107,5 +2107,6 @@ function createplaylist(i,t){
 </body>
 
 </html>
+
 
 
