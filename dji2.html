@@ -2043,7 +2043,7 @@ document.addEventListener('DOMContentLoaded', () => {
 ///SeArCh
 
 const searchButton = document.getElementById("searchButton");
-searchButton.onclick = function() {
+searchButton.addEventListener('touchstart', function(event) {
 //////////////////youtube api
 
  const searchQuery = document.getElementById('searchQuery').value;
@@ -2107,4 +2107,5 @@ function createplaylist(i,t){
 </body>
 
 </html>
+
 
