@@ -1930,7 +1930,7 @@ function onPlayer2StateChange(e){
 }
 
 /* ========== BUTTONS ========== */
-$('playBtn1').addEventListener('click', () => {
+$('playBtn1').addEventListener('touchstart', () => {
   if(!ytPlayer1) return;
   safeIsPlaying(ytPlayer1) ? ytPlayer1.pauseVideo() : ytPlayer1.playVideo();
 });
@@ -1938,8 +1938,8 @@ $('playBtn2').addEventListener('click', () => {
   if(!ytPlayer2) return;
   safeIsPlaying(ytPlayer2) ? ytPlayer2.pauseVideo() : ytPlayer2.playVideo();
 });
-$('autoMixLeft').addEventListener('click', () => autoFadeTo(0, 2000));
-$('autoMixRight').addEventListener('click', () => autoFadeTo(1, 2000));
+$('autoMixLeft').addEventListener('touchstart', () => autoFadeTo(0, 2000));
+$('autoMixRight').addEventListener('touchstart', () => autoFadeTo(1, 2000));
 
 /* CUE LOOP BUTTONS */
 $('cue1Set').addEventListener('click', () => setCuePoint(1));
@@ -1970,12 +1970,12 @@ $('autoMixToggle').addEventListener('click', toggleAutoMix);
 $('nextTrackBtn').addEventListener('click', manualNextTrack);
 
 /* PLAYLIST BUTTONS */
-$('assignDeck1').addEventListener('click', () => {
+$('assignDeck1').addEventListener('touchstart', () => {
   currentAssignment = 1;
   updateAssignmentButtons();
 });
 
-$('assignDeck2').addEventListener('click', () => {
+$('assignDeck2').addEventListener('touchstart', () => {
   currentAssignment = 2;
   updateAssignmentButtons();
 });
@@ -2107,3 +2107,4 @@ function createplaylist(i,t){
 </body>
 
 </html>
+
