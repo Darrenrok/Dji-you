@@ -2102,7 +2102,7 @@ xhr.addEventListener('readystatechange', function () {
 	if (this.readyState === this.DONE) {
 		const settings=this.responseText
 		//loop through json
-
+playlist.length = 0;
 /////
 const parsed = JSON.parse(settings);   // {videos:[...]}
 const list   = parsed.videos;           // the real array
@@ -2135,6 +2135,7 @@ xhr.send(data);
 
 ////////////creat playlist
 function createplaylist(i,t){
+	
 	const search = {
 								id: i,
 								title: t,
@@ -2149,6 +2150,7 @@ function createplaylist(i,t){
 </body>
 
 </html>
+
 
 
 
