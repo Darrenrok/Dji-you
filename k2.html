@@ -1,0 +1,2150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K2</title>
+  <style>
+    html,body{margin:0;background:#111;color:#eee;font-family:sans-serif;text-align:center}
+    h2{margin:.4em 0}
+
+    /* ---- full-width waveforms ---- */
+    .waveform-full-separate{
+      width:100%;
+      height:80px;
+      background:#222;
+      position:relative;
+      cursor:pointer;
+      touch-action:none;
+      margin-bottom:2px;
+      overflow:hidden;
+    }
+    canvas{
+      width:100%;
+      height:100%;
+      display:block;
+      background:#222;
+    }
+
+    /* ---- centered content ---- */
+    .main-content{display:flex;justify-content:center;padding:1em 0}
+    .decks{display:flex;justify-content:center;align-items:flex-start;gap:2em;flex-wrap:nowrap;padding:0 1em;max-width:1400px;margin:0 auto}
+
+    /* ---- DECK BLOCK : iframe + time-code ---- */
+    .deck{flex:1 1 50%;min-width:300px;max-width:none;display:flex;flex-direction:column;align-items:center}
+
+    /* time-code strip (above iframe) */
+    .time-strip{
+      width:100%;
+      padding:4px 8px;
+      background:#1a1a1a;
+      border-radius:4px 4px 0 0;
+      font-size:0.85em;
+      color:#aaa;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      box-sizing:border-box;
+    }
+    .time-label{font-weight:bold}
+    .time-code{color:#fff}
+
+    /* iframe container */
+    .player{width:100%;height:400px;border-radius:0 0 4px 4px;overflow:hidden}
+
+    /* ---- TURNTABLE ---- */
+    .turntable-container {
+      width: 200px;
+      height: 200px;
+      margin: 10px 0;
+      position: relative;
+      border-radius: 50%;
+      background: #2a2a2a;
+      border: 8px solid #444;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
+    .turntable-container:active {
+      cursor: grabbing;
+    }
+    .turntable {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle, #333 30%, #222 70%);
+      position: relative;
+      transition: transform 0.1s ease-out;
+    }
+    .turntable.playing {
+      animation: spin 2s linear infinite;
+    }
+    .turntable.dragging {
+      animation: none !important;
+      transition: none;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .turntable-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      background: #ff0055;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+    .turntable-line {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 2px;
+      height: 60px;
+      background: #ff0055;
+      transform-origin: 50% 0%;
+      transform: translate(-50%, 0) rotate(0deg);
+      z-index: 1;
+    }
+
+    button{margin:.5em .3em;padding:.6em 1.8em;font-size:1.1em;color:#fff;background:#ff0055;border:none;border-radius:4px;cursor:pointer}
+    button:hover{background:#e60550}
+
+    /* ---- CUE LOOP CONTROLS ---- */
+    .cue-loop-section {
+      margin: 10px 0;
+      padding: 10px;
+      background: #1a1a1a;
+      border-radius: 6px;
+      width: 200px;
+    }
+    .cue-loop-title {
+      font-size: 0.8em;
+      color: #aaa;
+      font-weight: bold;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .cue-loop-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .cue-loop-row {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+    }
+    .cue-btn {
+      padding: 6px 8px;
+      font-size: 0.7em;
+      background: #2a2a2a;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 3px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+      flex: 1;
+    }
+    .cue-btn:hover {
+      background: #3a3a3a;
+    }
+    .cue-btn:active {
+      background: #ff0055;
+      border-color: #ff0055;
+    }
+    .cue-btn.active {
+      background: #ffaa00;
+      border-color: #ffaa00;
+    }
+    .loop-length-controls {
+      display: flex;
+      gap: 2px;
+      justify-content: center;
+      margin-top: 6px;
+    }
+    .loop-length-btn {
+      padding: 3px 5px;
+      font-size: 0.6em;
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 2px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .loop-length-btn:hover {
+      background: #444;
+    }
+    .loop-length-btn.active {
+      background: #0a0;
+      border-color: #0a0;
+    }
+
+    /* ---- centered crossfader block ---- */
+    .crossfader-container{
+      min-width:200px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      align-items:center;
+      margin:2em 0;
+    }
+
+    .master-eq-section{display:flex;gap:2em;align-items:center;padding:1em;background:#1a1a1a;border-radius:8px;margin-bottom:2em}
+    .master-eq-title{font-size:1em;color:#aaa;font-weight:bold;margin-right:1em}
+    .eq-knob-group{display:flex;flex-direction:column;align-items:center}
+    .eq-label{font-size:0.8em;color:#aaa;margin-bottom:0.5em}
+    .eq-knob{width:48px;height:48px;border-radius:50%;background:#2a2a2a;border:2px solid #444;position:relative;cursor:grab;user-select:none}
+    .eq-knob:active{cursor:grabbing}
+    .eq-indicator{width:2px;height:16px;background:#ff0055;position:absolute;top:4px;left:50%;transform:translateX(-50%);transform-origin:50% 20px}
+    .eq-value{font-size:0.7em;color:#888;margin-top:0.3em}
+
+    .crossfader-label{font-size:0.9em;color:#aaa;margin-bottom:8px}
+    .crossfader-track{width:180px;height:6px;background:#444;border-radius:3px;position:relative;cursor:pointer;touch-action:none}
+    .crossfader-handle{width:20px;height:24px;background:#fff;border-radius:4px;position:absolute;top:-9px;left:50%;transform:translateX(-50%);cursor:grab;user-select:none;box-shadow:0 2px 6px rgba(0,0,0,0.5);z-index:10}
+    .crossfader-handle:active{cursor:grabbing}
+
+    .auto-mix-buttons{display:flex;gap:1em;margin-top:12px;justify-content:center}
+    .auto-mix-btn{padding:8px 16px;font-size:0.9em;background:#333;color:#fff;border:1px solid #555;border-radius:4px;cursor:pointer;user-select:none}
+    .auto-mix-btn:hover{background:#444}
+    .auto-mix-labels{display:flex;width:180px;justify-content:space-between;font-size:0.8em;color:#888;margin-top:8px}
+
+    /* ---- sound-FX grid ---- */
+    .sound-effects-section{margin-top:16px;padding:12px;background:#1a1a1a;border-radius:8px;width:180px}
+    .sound-effects-title{font-size:0.9em;color:#aaa;font-weight:bold;margin-bottom:8px;text-align:center}
+    .sound-effects-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .fx-btn{padding:6px 8px;font-size:0.75em;background:#2a2a2a;color:#fff;border:1px solid #444;border-radius:3px;cursor:pointer;user-select:none;transition:background 0.2s}
+    .fx-btn:hover{background:#3a3a3a}
+    .fx-btn:active{background:#ff0055;border-color:#ff0055}
+
+    /* ---- BPM SYNC ---- */
+    .bpm-section {
+      margin-top: 16px;
+      padding: 12px;
+      background: #1a1a1a;
+      border-radius: 8px;
+      width: 180px;
+    }
+    .bpm-title {
+      font-size: 0.9em;
+      color: #aaa;
+      font-weight: bold;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .bpm-display {
+      font-size: 1.5em;
+      color: #ff0055;
+      text-align: center;
+      margin-bottom: 8px;
+      font-family: monospace;
+    }
+    .bpm-controls {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+    .bpm-btn {
+      padding: 4px 8px;
+      font-size: 0.7em;
+      background: #2a2a2a;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 3px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .bpm-btn:hover {
+      background: #3a3a3a;
+    }
+    .bpm-btn:active {
+      background: #ff0055;
+      border-color: #ff0055;
+    }
+    .sync-status {
+      font-size: 0.7em;
+      color: #888;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    /* ---- PLAYLIST ---- */
+    .playlist-section {
+      margin-top: 16px;
+      padding: 12px;
+      background: #1a1a1a;
+      border-radius: 8px;
+      width: 180px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .playlist-title {
+      font-size: 0.9em;
+      color: #aaa;
+      font-weight: bold;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .playlist-track {
+      padding: 6px 8px;
+      margin: 2px 0;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 3px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+      font-size: 0.7em;
+      position: relative;
+    }
+    .playlist-track:hover {
+      background: #3a3a3a;
+    }
+    .playlist-track.active {
+      background: #ff0055;
+      border-color: #ff0055;
+      color: #fff;
+    }
+    .playlist-track.loading {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .playlist-track.next-track {
+      border-color: #ffaa00;
+      box-shadow: 0 0 8px rgba(255, 170, 0, 0.3);
+    }
+    .track-assignment {
+      display: flex;
+      gap: 4px;
+      margin-top: 8px;
+      justify-content: center;
+    }
+    .assign-btn {
+      padding: 4px 8px;
+      font-size: 0.65em;
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 3px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+      flex: 1;
+    }
+    .assign-btn:hover {
+      background: #444;
+    }
+    .assign-btn.deck1-active {
+      background: #0a0;
+      border-color: #0a0;
+    }
+    .assign-btn.deck2-active {
+      background: #a00;
+      border-color: #a00;
+    }
+    .add-track-btn {
+      width: 100%;
+      padding: 8px;
+      margin-top: 8px;
+      font-size: 0.7em;
+      background: #2a2a2a;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 3px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .add-track-btn:hover {
+      background: #3a3a3a;
+    }
+    .bpm-tag {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.6em;
+      color: #888;
+      background: #111;
+      padding: 2px 4px;
+      border-radius: 2px;
+    }
+
+    /* ---- AUTO-MIX CONTROLS ---- */
+    .auto-mix-controls {
+      margin-top: 12px;
+      padding: 10px;
+      background: #2a2a2a;
+      border-radius: 6px;
+      border: 1px solid #444;
+    }
+    .auto-mix-status {
+      font-size: 0.7em;
+      color: #aaa;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .auto-mix-btn-row {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+    }
+    .auto-mix-small-btn {
+      padding: 4px 6px;
+      font-size: 0.6em;
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 3px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+      flex: 1;
+    }
+    .auto-mix-small-btn:hover {
+      background: #444;
+    }
+    .auto-mix-small-btn.active {
+      background: #ff0055;
+      border-color: #ff0055;
+    }
+    .next-track-indicator {
+      font-size: 0.6em;
+      color: #ffaa00;
+      text-align: center;
+      margin-top: 4px;
+      min-height: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>K2</h2>
+
+<!-- FULL WIDTH, SEPARATE, FILLED WAVEFORMS -->
+<div class="waveform-full-separate" id="waveWrap1">
+  <canvas id="waveCanvas1"></canvas>
+</div>
+<div class="waveform-full-separate" id="waveWrap2">
+  <canvas id="waveCanvas2"></canvas>
+</div>
+
+<!-- MAIN CONTENT – CENTERED FLEX LAYOUT -->
+<div class="main-content">
+  <div class="decks">
+    <!-- DECK 1 -->
+    <div class="deck">
+      <!-- time-code strip -->
+      <div class="time-strip">
+        <span class="time-label">Deck 1</span>
+        <span class="time-code" id="deck1Time">--:--</span>
+      </div>
+      <!-- TURNTABLE 1 -->
+      <div class="turntable-container" id="turntableContainer1">
+        <div class="turntable" id="turntable1">
+          <div class="turntable-center"></div>
+          <div class="turntable-line"></div>
+        </div>
+      </div>
+      <!-- player -->
+      <div id="player1" class="player"></div>
+      
+      <!-- CUE LOOP CONTROLS -->
+      <div class="cue-loop-section">
+        <div class="cue-loop-title">CUE & LOOP</div>
+        <div class="cue-loop-controls">
+          <div class="cue-loop-row">
+            <button class="cue-btn" id="cue1Set">SET CUE</button>
+            <button class="cue-btn" id="cue1Jump">JUMP CUE</button>
+          </div>
+          <div class="cue-loop-row">
+            <button class="cue-btn" id="loop1In">LOOP IN</button>
+            <button class="cue-btn" id="loop1Out">LOOP OUT</button>
+          </div>
+          <div class="cue-loop-row">
+            <button class="cue-btn" id="loop1Active">LOOP ON</button>
+            <button class="cue-btn" id="cue1Clear">CLEAR</button>
+          </div>
+          <div class="loop-length-controls">
+            <button class="loop-length-btn" data-deck="1" data-length="4">4</button>
+            <button class="loop-length-btn" data-deck="1" data-length="8">8</button>
+            <button class="loop-length-btn" data-deck="1" data-length="16">16</button>
+            <button class="loop-length-btn" data-deck="1" data-length="32">32</button>
+          </div>
+        </div>
+      </div>
+      
+      <button id="playBtn1">▶ PLAY</button>
+    </div>
+
+    <!-- CROSSFADER + MASTER EQ + EFFECTS – CENTERED BLOCK -->
+    <div class="crossfader-container">
+      <div class="master-eq-section">
+     
+        <div class="eq-knob-group">
+          <div class="eq-label">LOW</div>
+          <div class="eq-knob" id="master-low" data-filter="low"><div class="eq-indicator"></div></div>
+          <div class="eq-value" id="master-low-value">0dB</div>
+        </div>
+        <div class="eq-knob-group">
+          <div class="eq-label">MID</div>
+          <div class="eq-knob" id="master-mid" data-filter="mid"><div class="eq-indicator"></div></div>
+          <div class="eq-value" id="master-mid-value">0dB</div>
+        </div>
+        <div class="eq-knob-group">
+          <div class="eq-label">HIGH</div>
+          <div class="eq-knob" id="master-high" data-filter="high"><div class="eq-indicator"></div></div>
+          <div class="eq-value" id="master-high-value">0dB</div>
+        </div>
+      </div>
+      
+      <div class="crossfader-label">CROSSFADER</div>
+      <div class="crossfader-track" id="crossfaderTrack">
+        <div class="crossfader-handle" id="crossfaderHandle"></div>
+      </div>
+      
+      <div class="auto-mix-buttons">
+        <button class="auto-mix-btn" id="autoMixLeft">← Auto Mix</button>
+        <button class="auto-mix-btn" id="autoMixRight">Auto Mix →</button>
+      </div>
+      
+      <div class="auto-mix-labels"><span>Deck 1</span><span>Deck 2</span></div>
+      
+      <!-- AUTO-MIX CONTROLS -->
+      <div class="auto-mix-controls">
+        <div class="auto-mix-status" id="autoMixStatus">Auto-Mix: OFF</div>
+        <div class="auto-mix-btn-row">
+          <button class="auto-mix-small-btn" id="autoMixToggle">ENABLE</button>
+          <button class="auto-mix-small-btn" id="nextTrackBtn">NEXT</button>
+        </div>
+        <div class="next-track-indicator" id="nextTrackIndicator"></div>
+      </div>
+      
+      <!-- PLAYLIST SECTION -->
+      <div class="playlist-section">
+	   <input  autofocus style=" background-color:black; color:white;" type="text" id="searchQuery" placeholder="SeArCh ...MuSic">
+        <button class="btn btn-outline-success" id="searchButton">Search</button>
+		<div class="playlist-title">PLAYLIST</div>
+        <div id="playlistContainer">
+          <!-- Playlist tracks will be dynamically added here -->
+        </div>
+        
+        <button  hidden class="add-track-btn" id="addTrackBtn">+ ADD TRACK</button>
+      </div>
+       <div class="track-assignment">
+          <button class="assign-btn" id="assignDeck1">DECK 1</button>
+          <button class="assign-btn" id="assignDeck2">DECK 2</button>
+        </div>
+      
+      <!-- BPM SYNC SECTION -->
+      <div class="bpm-section">
+        <div class="bpm-title">BPM SYNC</div>
+        <div class="bpm-display" id="bpmDisplay">120.0</div>
+        <div class="bpm-controls">
+          <button class="bpm-btn" id="tapTempo1">TAP DECK 1</button>
+          <button class="bpm-btn" id="tapTempo2">TAP DECK 2</button>
+        </div>
+        <div class="bpm-controls">
+          <button class="bpm-btn" id="syncBPM">SYNC BPM</button>
+          <button class="bpm-btn" id="resetBPM">RESET</button>
+        </div>
+        <div class="sync-status" id="syncStatus">Manual Mode</div>
+      </div>
+      
+      <!-- SOUND EFFECTS -->
+      <div class="sound-effects-section">
+        <div class="sound-effects-title">SOUND FX</div>
+        <div class="sound-effects-grid">
+          <button class="fx-btn" id="fxEcho">Echo</button>
+          <button class="fx-btn" id="fxReverb">Reverb</button>
+          <button class="fx-btn" id="fxFilter">Filter</button>
+          <button class="fx-btn" id="fxFlanger">Flanger</button>
+          <button class="fx-btn" id="fxDistort">Distort</button>
+          <button class="fx-btn" id="fxGate">Gate</button>
+          <button class="fx-btn" id="fxPhaser">Phaser</button>
+          <button class="fx-btn" id="fxChop">Chop</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DECK 2 -->
+    <div class="deck">
+      <!-- time-code strip -->
+      <div class="time-strip">
+        <span class="time-label">Deck 2</span>
+        <span class="time-code" id="deck2Time">--:--</span>
+      </div>
+      <!-- TURNTABLE 2 -->
+      <div class="turntable-container" id="turntableContainer2">
+        <div class="turntable" id="turntable2">
+          <div class="turntable-center"></div>
+          <div class="turntable-line"></div>
+        </div>
+      </div>
+      <!-- player -->
+      <div id="player2" class="player"></div>
+      
+      <!-- CUE LOOP CONTROLS -->
+      <div class="cue-loop-section">
+        <div class="cue-loop-title">CUE & LOOP</div>
+        <div class="cue-loop-controls">
+          <div class="cue-loop-row">
+            <button class="cue-btn" id="cue2Set">SET CUE</button>
+            <button class="cue-btn" id="cue2Jump">JUMP CUE</button>
+          </div>
+          <div class="cue-loop-row">
+            <button class="cue-btn" id="loop2In">LOOP IN</button>
+            <button class="cue-btn" id="loop2Out">LOOP OUT</button>
+          </div>
+          <div class="cue-loop-row">
+            <button class="cue-btn" id="loop2Active">LOOP ON</button>
+            <button class="cue-btn" id="cue2Clear">CLEAR</button>
+          </div>
+          <div class="loop-length-controls">
+            <button class="loop-length-btn" data-deck="2" data-length="4">4</button>
+            <button class="loop-length-btn" data-deck="2" data-length="8">8</button>
+            <button class="loop-length-btn" data-deck="2" data-length="16">16</button>
+            <button class="loop-length-btn" data-deck="2" data-length="32">32</button>
+          </div>
+        </div>
+      </div>
+      
+      <button id="playBtn2">▶ PLAY</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========== GLOBALS ========== */
+const $ = id => document.getElementById(id);
+let videoId1 = 'M7lc1UVf-VE';
+let videoId2 = 'dQw4w9WgXcQ';
+let ytPlayer1 = null, ytPlayer2 = null;
+let crossfaderPos = 0.5;
+let autoFadeAnimation = null;
+
+const EQ_SETTINGS = {
+  low: { freq: 320, type: 'lowshelf' },
+  mid: { freq: 1000, type: 'peaking' },
+  high: { freq: 3200, type: 'highshelf' }
+};
+const masterEQFilters = {};
+let masterCtx = null;
+
+/* FX */
+let fxCtx = null, fxMasterGain = null;
+
+/* TURNTABLE INTERACTION */
+let turntableStates = {
+  1: { rotation: 0, isDragging: false, startAngle: 0, lastAngle: 0 },
+  2: { rotation: 0, isDragging: false, startAngle: 0, lastAngle: 0 }
+};
+
+/* BPM SYNC */
+let bpmData = {
+  deck1: { taps: [], bpm: 120, lastTap: 0 },
+  deck2: { taps: [], bpm: 120, lastTap: 0 },
+  masterBPM: 120,
+  isSynced: false
+};
+
+/* PLAYLIST */
+let playlist = []
+let currentPlaylistIndex = 0;
+let currentAssignment = 1;
+
+/* AUTO-MIX */
+let autoMixEnabled = false;
+let autoMixTimeout = null;
+let isAutoMixing = false;
+
+/* RESIZE HANDLING */
+let resizeTimeout = null;
+let isResizing = false;
+
+/* CUE LOOP */
+let cueLoopData = {
+  1: { 
+    cuePoint: null, 
+    loopIn: null, 
+    loopOut: null, 
+    loopActive: false,
+    autoLoopLength: 8,
+    isLooping: false
+  },
+  2: { 
+    cuePoint: null, 
+    loopIn: null, 
+    loopOut: null, 
+    loopActive: false,
+    autoLoopLength: 8,
+    isLooping: false
+  }
+};
+
+/* ========== HELPERS ========== */
+function safeGetDuration(player) {
+  if (!player || typeof player.getDuration !== 'function') return 0;
+  try { const d = player.getDuration(); return (typeof d === 'number' && d > 0) ? d : 0; } catch(e) { return 0; }
+}
+function safeGetCurrentTime(player) {
+  if (!player || typeof player.getCurrentTime !== 'function') return 0;
+  try { const t = player.getCurrentTime(); return (typeof t === 'number' && t >= 0) ? t : 0; } catch(e) { return 0; }
+}
+function safeSeek(player, sec) {
+  if (!player || typeof player.seekTo !== 'function') return;
+  try { 
+    const dur = safeGetDuration(player);
+    if (dur > 0 && sec >= 0 && sec <= dur) player.seekTo(sec, true); 
+  } catch(e) { /* ignore */ }
+}
+function safeIsPlaying(player) {
+  if (!player || typeof player.getPlayerState !== 'function') return false;
+  try { return player.getPlayerState() === YT.PlayerState.PLAYING; } catch(e) { return false; }
+}
+function safeSetVolume(player, vol) {
+  if (!player || typeof player.setVolume !== 'function') return;
+  try { player.setVolume(Math.max(0, Math.min(100, vol))); } catch(e) { /* ignore */ }
+}
+
+/* ========== CUE LOOP FUNCTIONS ========== */
+function setCuePoint(deckNum) {
+  const player = deckNum === 1 ? ytPlayer1 : ytPlayer2;
+  if (!player) return;
+  
+  const currentTime = safeGetCurrentTime(player);
+  cueLoopData[deckNum].cuePoint = currentTime;
+  
+  // Visual feedback
+  const cueBtn = $(`cue${deckNum}Set`);
+  cueBtn.style.background = '#ffaa00';
+  cueBtn.textContent = 'CUE SET';
+  setTimeout(() => {
+    cueBtn.style.background = '';
+    cueBtn.textContent = 'SET CUE';
+  }, 500);
+  
+  console.log(`Deck ${deckNum}: Cue point set at ${currentTime.toFixed(1)}s`);
+}
+
+function jumpToCuePoint(deckNum) {
+  const player = deckNum === 1 ? ytPlayer1 : ytPlayer2;
+  if (!player || cueLoopData[deckNum].cuePoint === null) return;
+  
+  safeSeek(player, cueLoopData[deckNum].cuePoint);
+  
+  // Visual feedback
+  const cueBtn = $(`cue${deckNum}Jump`);
+  cueBtn.style.background = '#0a0';
+  setTimeout(() => {
+    cueBtn.style.background = '';
+  }, 300);
+}
+
+function setLoopIn(deckNum) {
+  const player = deckNum === 1 ? ytPlayer1 : ytPlayer2;
+  if (!player) return;
+  
+  const currentTime = safeGetCurrentTime(player);
+  cueLoopData[deckNum].loopIn = currentTime;
+  
+  // Visual feedback
+  const loopInBtn = $(`loop${deckNum}In`);
+  loopInBtn.style.background = '#ffaa00';
+  setTimeout(() => {
+    loopInBtn.style.background = '';
+  }, 500);
+  
+  console.log(`Deck ${deckNum}: Loop IN set at ${currentTime.toFixed(1)}s`);
+}
+
+function setLoopOut(deckNum) {
+  const player = deckNum === 1 ? ytPlayer1 : ytPlayer2;
+  if (!player || cueLoopData[deckNum].loopIn === null) return;
+  
+  const currentTime = safeGetCurrentTime(player);
+  if (currentTime <= cueLoopData[deckNum].loopIn) {
+    alert('Loop OUT must be after Loop IN point');
+    return;
+  }
+  
+  cueLoopData[deckNum].loopOut = currentTime;
+  cueLoopData[deckNum].loopActive = true;
+  
+  // Update button states
+  updateLoopButtonStates(deckNum);
+  
+  console.log(`Deck ${deckNum}: Loop OUT set at ${currentTime.toFixed(1)}s`);
+}
+
+function toggleLoop(deckNum) {
+  const loopData = cueLoopData[deckNum];
+  if (!loopData.loopIn || !loopData.loopOut) {
+    // Auto-create loop if only IN is set
+    if (loopData.loopIn) {
+      const player = deckNum === 1 ? ytPlayer1 : ytPlayer2;
+      if (player) {
+        const loopLength = loopData.autoLoopLength;
+        const duration = safeGetDuration(player);
+        const loopOut = Math.min(loopData.loopIn + loopLength, duration);
+        
+        loopData.loopOut = loopOut;
+        loopData.loopActive = true;
+      }
+    } else {
+      alert('Set Loop IN point first');
+      return;
+    }
+  }
+  
+  loopData.loopActive = !loopData.loopActive;
+  updateLoopButtonStates(deckNum);
+  
+  if (loopData.loopActive) {
+    startLoopMonitoring(deckNum);
+  }
+}
+
+function setAutoLoopLength(deckNum, length) {
+  cueLoopData[deckNum].autoLoopLength = length;
+  
+  // Update button states
+  document.querySelectorAll(`.loop-length-btn[data-deck="${deckNum}"]`).forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.length) === length);
+  });
+}
+
+function clearCueLoop(deckNum) {
+  cueLoopData[deckNum] = { 
+    cuePoint: null, 
+    loopIn: null, 
+    loopOut: null, 
+    loopActive: false,
+    autoLoopLength: cueLoopData[deckNum].autoLoopLength,
+    isLooping: false
+  };
+  
+  updateLoopButtonStates(deckNum);
+  
+  // Visual feedback
+  const clearBtn = $(`cue${deckNum}Clear`);
+  clearBtn.style.background = '#a00';
+  setTimeout(() => {
+    clearBtn.style.background = '';
+  }, 300);
+}
+
+function updateLoopButtonStates(deckNum) {
+  const loopData = cueLoopData[deckNum];
+  const loopBtn = $(`loop${deckNum}Active`);
+  
+  if (loopData.loopActive) {
+    loopBtn.textContent = 'LOOP OFF';
+    loopBtn.classList.add('active');
+  } else {
+    loopBtn.textContent = 'LOOP ON';
+    loopBtn.classList.remove('active');
+  }
+}
+
+function startLoopMonitoring(deckNum) {
+  const player = deckNum === 1 ? ytPlayer1 : ytPlayer2;
+  if (!player) return;
+  
+  function checkLoop() {
+    const loopData = cueLoopData[deckNum];
+    if (!loopData.loopActive || !loopData.loopIn || !loopData.loopOut) return;
+    
+    const currentTime = safeGetCurrentTime(player);
+    
+    // Check if we've reached the loop out point
+    if (currentTime >= loopData.loopOut) {
+      // Jump back to loop in point
+      safeSeek(player, loopData.loopIn);
+    }
+    
+    // Continue monitoring if loop is active
+    if (loopData.loopActive) {
+      requestAnimationFrame(checkLoop);
+    }
+  }
+  
+  checkLoop();
+}
+
+/* ========== AUTO-MIX FUNCTIONS ========== */
+function toggleAutoMix() {
+  autoMixEnabled = !autoMixEnabled;
+  const toggleBtn = $('autoMixToggle');
+  const statusDiv = $('autoMixStatus');
+  
+  if (autoMixEnabled) {
+    toggleBtn.classList.add('active');
+    toggleBtn.textContent = 'DISABLE';
+    statusDiv.textContent = 'Auto-Mix: ON';
+    startAutoMixMonitoring();
+  } else {
+    toggleBtn.classList.remove('active');
+    toggleBtn.textContent = 'ENABLE';
+    statusDiv.textContent = 'Auto-Mix: OFF';
+    stopAutoMixMonitoring();
+  }
+}
+
+function startAutoMixMonitoring() {
+  if (!autoMixEnabled) return;
+  
+  // Monitor both decks for when tracks end
+  checkTrackStatus();
+}
+
+function stopAutoMixMonitoring() {
+  if (autoMixTimeout) {
+    clearTimeout(autoMixTimeout);
+    autoMixTimeout = null;
+  }
+  $('nextTrackIndicator').textContent = '';
+}
+
+function checkTrackStatus() {
+  if (!autoMixEnabled) return;
+  
+  const dur1 = safeGetDuration(ytPlayer1);
+  const time1 = safeGetCurrentTime(ytPlayer1);
+  const dur2 = safeGetDuration(ytPlayer2);
+  const time2 = safeGetCurrentTime(ytPlayer2);
+  
+  const remaining1 = dur1 - time1;
+  const remaining2 = dur2 - time2;
+  
+  // Check if any track is about to end (within 10 seconds)
+  if (remaining1 > 0 && remaining1 < 10 && safeIsPlaying(ytPlayer1)) {
+    prepareNextTrack(2); // Load to Deck 2 since Deck 1 is playing
+  } else if (remaining2 > 0 && remaining2 < 10 && safeIsPlaying(ytPlayer2)) {
+    prepareNextTrack(1); // Load to Deck 1 since Deck 2 is playing
+  }
+  
+  // Continue monitoring
+  if (autoMixEnabled) {
+    autoMixTimeout = setTimeout(checkTrackStatus, 1000);
+  }
+}
+
+function prepareNextTrack(targetDeck) {
+  const nextTrack = getNextTrack();
+  if (!nextTrack) return;
+  
+  // Show next track indicator
+  const indicator = $('nextTrackIndicator');
+  indicator.textContent = `Next: ${nextTrack.title} (${nextTrack.bpm} BPM) → Deck ${targetDeck}`;
+  
+  // Highlight next track in playlist
+  highlightNextTrack(nextTrack);
+  
+  // Get current track remaining time
+  const currentPlayer = targetDeck === 1 ? ytPlayer2 : ytPlayer1;
+  const timeUntilEnd = safeGetDuration(currentPlayer) - safeGetCurrentTime(currentPlayer);
+  
+  // Schedule loading and playback
+  setTimeout(() => {
+    loadAndPlayNext(nextTrack, targetDeck);
+  }, Math.max(0, (timeUntilEnd - 3) * 1000)); // Load 3 seconds before end
+}
+
+function manualNextTrack() {
+  if (isAutoMixing) return;
+  
+  const nextTrack = getNextTrack();
+  if (!nextTrack) return;
+  
+  // Determine which deck to load to (prefer the one not currently playing)
+  const deck1Playing = safeIsPlaying(ytPlayer1);
+  const deck2Playing = safeIsPlaying(ytPlayer2);
+  
+  let targetDeck;
+  if (!deck1Playing && deck2Playing) {
+    targetDeck = 1; // Deck 1 is free, Deck 2 is playing
+  } else if (deck1Playing && !deck2Playing) {
+    targetDeck = 2; // Deck 2 is free, Deck 1 is playing
+  } else if (!deck1Playing && !deck2Playing) {
+    targetDeck = 1; // Both free, default to Deck 1
+  } else {
+    // Both playing - choose the one with less time remaining
+    const remaining1 = safeGetDuration(ytPlayer1) - safeGetCurrentTime(ytPlayer1);
+    const remaining2 = safeGetDuration(ytPlayer2) - safeGetCurrentTime(ytPlayer2);
+    targetDeck = remaining1 < remaining2 ? 1 : 2;
+  }
+  
+  // Immediately load and play the next track
+  loadAndPlayNext(nextTrack, targetDeck);
+}
+
+function loadAndPlayNext(track, targetDeck) {
+  if (!autoMixEnabled && !isAutoMixing) return;
+  
+  isAutoMixing = true;
+  
+  console.log(`Auto-mix: Loading ${track.title} to Deck ${targetDeck}`);
+  
+  // Load track to specified deck
+  loadTrackToDeck(track, targetDeck);
+  
+  // Start playing the new track immediately after loading
+  setTimeout(() => {
+    const targetPlayer = targetDeck === 1 ? ytPlayer1 : ytPlayer2;
+    if (targetPlayer) {
+      targetPlayer.playVideo();
+      console.log(`Auto-mix: Started playing on Deck ${targetDeck}`);
+    }
+  }, 1500);
+  
+  // Auto-sync BPM if needed
+  setTimeout(() => {
+    if (Math.abs(bpmData.deck1.bpm - bpmData.deck2.bpm) > 2) {
+      syncBPM();
+    }
+  }, 2000);
+  
+  // Auto-fade to the new track after it starts playing
+  setTimeout(() => {
+    if (targetDeck === 1) {
+      autoFadeTo(0.3, 2000); // Slight bias to new track on deck 1
+    } else {
+      autoFadeTo(0.7, 2000); // Slight bias to new track on deck 2
+    }
+    isAutoMixing = false;
+  }, 3000);
+  
+  // Clear indicator
+  $('nextTrackIndicator').textContent = '';
+}
+
+function getNextTrack() {
+  if (playlist.length === 0) return null;
+  
+  // Get next track in playlist (wrap around)
+  currentPlaylistIndex = (currentPlaylistIndex + 1) % playlist.length;
+  return playlist[currentPlaylistIndex];
+}
+
+function highlightNextTrack(track) {
+  // Remove previous highlights
+  document.querySelectorAll('.playlist-track').forEach(el => {
+    el.classList.remove('next-track');
+  });
+  
+  // Highlight next track
+  const trackElements = document.querySelectorAll('.playlist-track');
+  const nextIndex = (currentPlaylistIndex + 1) % playlist.length;
+  if (trackElements[nextIndex]) {
+    trackElements[nextIndex].classList.add('next-track');
+  }
+}
+
+/* ========== PLAYLIST FUNCTIONS ========== */
+function renderPlaylist() {
+  const container = $('playlistContainer');
+  container.innerHTML = '';
+  
+  playlist.forEach((track, index) => {
+    const trackDiv = document.createElement('div');
+    trackDiv.className = 'playlist-track';
+    trackDiv.innerHTML = `
+      ${track.title}
+      <span class="bpm-tag">${track.bpm} BPM</span>
+    `;
+    
+    // Mark active track
+    if (track.id === videoId1 || track.id === videoId2) {
+      trackDiv.classList.add('active');
+    }
+    
+    // Mark if this is the next track for auto-mix
+    if (autoMixEnabled && index === ((currentPlaylistIndex + 1) % playlist.length)) {
+      trackDiv.classList.add('next-track');
+    }
+    
+    trackDiv.addEventListener('touchstart', () => loadTrackToDeck(track, currentAssignment));
+    container.appendChild(trackDiv);
+  });
+}
+
+function loadTrackToDeck(track, deckNum) {
+  const trackElement = document.querySelectorAll('.playlist-track')[playlist.findIndex(t => t.id === track.id)];
+  if (trackElement) {
+    trackElement.classList.add('loading');
+  }
+  
+  if (deckNum === 1) {
+    videoId1 = track.id;
+    if (ytPlayer1) {
+      ytPlayer1.loadVideoById(track.id);
+      bpmData.deck1.bpm = track.bpm;
+      updateBPMDisplay();
+      updateSyncStatus(`Deck 1: ${track.bpm} BPM`);
+    }
+  } else {
+    videoId2 = track.id;
+    if (ytPlayer2) {
+      ytPlayer2.loadVideoById(track.id);
+      bpmData.deck2.bpm = track.bpm;
+      updateBPMDisplay();
+      updateSyncStatus(`Deck 2: ${track.bpm} BPM`);
+    }
+  }
+  
+  // Update active states
+  renderPlaylist();
+  
+  // Auto-sync BPM if tracks have different BPMs
+  if (Math.abs(bpmData.deck1.bpm - bpmData.deck2.bpm) > 2) {
+    setTimeout(() => {
+      syncBPM();
+    }, 1000);
+  }
+}
+
+function addNewTrack() {
+  // Simulate adding a new track with random BPM
+  const newTracks = [
+    { id: '9bZkp7q19f0', title: 'New Track A', bpm: 118 },
+    { id: 'kXYiU_JCYtU', title: 'New Track B', bpm: 132 },
+    { id: 'uelHwf8o7_Gk', title: 'New Track C', bpm: 126 },
+    { id: 'RgKAFK5djSk', title: 'New Track D', bpm: 124 }
+  ];
+  
+  const randomTrack = newTracks[Math.floor(Math.random() * newTracks.length)];
+  playlist.push(randomTrack);
+  renderPlaylist();
+}
+
+function updateAssignmentButtons() {
+  const assignBtn1 = $('assignDeck1');
+  const assignBtn2 = $('assignDeck2');
+  
+  assignBtn1.classList.toggle('deck1-active', currentAssignment === 1);
+  assignBtn2.classList.toggle('deck2-active', currentAssignment === 2);
+}
+
+/* ========== RESIZE HANDLING ========== */
+function handleResize() {
+  // Clear any pending resize
+  if (resizeTimeout) {
+    clearTimeout(resizeTimeout);
+  }
+  
+  isResizing = true;
+  
+  // Immediate resize of canvas elements
+  resizeCanvases();
+  
+  // Debounced redraw for waveforms
+  resizeTimeout = setTimeout(() => {
+    redrawWaveforms();
+    isResizing = false;
+  }, 150);
+}
+
+function resizeCanvases() {
+  const wave1 = $('waveWrap1');
+  const wave2 = $('waveWrap2');
+  const canv1 = $('waveCanvas1');
+  const canv2 = $('waveCanvas2');
+  
+  if (wave1 && canv1) {
+    const rect = wave1.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canv1.width = rect.width * dpr;
+    canv1.height = rect.height * dpr;
+    canv1.style.width = rect.width + 'px';
+    canv1.style.height = rect.height + 'px';
+    const ctx = canv1.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  
+  if (wave2 && canv2) {
+    const rect = wave2.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canv2.width = rect.width * dpr;
+    canv2.height = rect.height * dpr;
+    canv2.style.width = rect.width + 'px';
+    canv2.style.height = rect.height + 'px';
+    const ctx = canv2.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+}
+
+function redrawWaveforms() {
+  // Rebuild peaks for new canvas size
+  const canv1 = $('waveCanvas1');
+  const canv2 = $('waveCanvas2');
+  
+  if (canv1) {
+    buildRandomPeaks(canv1);
+    if (canv1.analyser && canv1.dataArray) {
+      buildPeaks(canv1);
+    }
+    // Force immediate redraw
+    const dur1 = safeGetDuration(ytPlayer1);
+    const time1 = safeGetCurrentTime(ytPlayer1);
+    if (dur1 > 0 && time1 >= 0) {
+      const pct = time1 / dur1;
+      drawWaveform(canv1, pct, '#0f0', false);
+    }
+  }
+  
+  if (canv2) {
+    buildRandomPeaks(canv2);
+    if (canv2.analyser && canv2.dataArray) {
+      buildPeaks(canv2);
+    }
+    // Force immediate redraw
+    const dur2 = safeGetDuration(ytPlayer2);
+    const time2 = safeGetCurrentTime(ytPlayer2);
+    if (dur2 > 0 && time2 >= 0) {
+      const pct = time2 / dur2;
+      drawWaveform(canv2, pct, '#f00', true);
+    }
+  }
+}
+
+/* ========== BPM SYNC FUNCTIONS ========== */
+function calculateBPM(taps) {
+  if (taps.length < 2) return 120;
+  let intervals = [];
+  for (let i = 1; i < taps.length; i++) {
+    intervals.push(taps[i] - taps[i-1]);
+  }
+  const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+  return Math.round(60000 / avgInterval); // Convert ms to BPM
+}
+
+function tapTempo(deckNum) {
+  const now = Date.now();
+  const deck = bpmData[`deck${deckNum}`];
+  
+  if (now - deck.lastTap > 2000) {
+    deck.taps = []; // Reset if too much time passed
+  }
+  
+  deck.taps.push(now);
+  deck.lastTap = now;
+  
+  if (deck.taps.length > 8) {
+    deck.taps.shift(); // Keep only last 8 taps
+  }
+  
+  if (deck.taps.length >= 2) {
+    deck.bpm = calculateBPM(deck.taps);
+    updateBPMDisplay();
+    updateSyncStatus(`Deck ${deckNum}: ${deck.bpm} BPM`);
+  }
+}
+
+function syncBPM() {
+  const avgBPM = Math.round((bpmData.deck1.bpm + bpmData.deck2.bpm) / 2);
+  bpmData.masterBPM = avgBPM;
+  bpmData.deck1.bpm = avgBPM;
+  bpmData.deck2.bpm = avgBPM;
+  bpmData.isSynced = true;
+  updateBPMDisplay();
+  updateSyncStatus(`SYNCED: ${avgBPM} BPM`);
+  
+  // Auto-center crossfader when syncing BPM
+  centerCrossfader();
+}
+
+function resetBPM() {
+  bpmData.deck1.bpm = 120;
+  bpmData.deck2.bpm = 120;
+  bpmData.masterBPM = 120;
+  bpmData.isSynced = false;
+  bpmData.deck1.taps = [];
+  bpmData.deck2.taps = [];
+  updateBPMDisplay();
+  updateSyncStatus('Manual Mode');
+}
+
+function updateBPMDisplay() {
+  $('bpmDisplay').textContent = bpmData.masterBPM.toFixed(1);
+}
+
+function updateSyncStatus(status) {
+  $('syncStatus').textContent = status;
+}
+
+function centerCrossfader() {
+  const handle = $('crossfaderHandle');
+  crossfaderPos = 0.5;
+  handle.style.left = '50%';
+  updateVolumes();
+}
+
+/* ========== TURNTABLE CONTROLS ========== */
+function updateTurntable(deckNum, isPlaying) {
+  const turntable = $(`turntable${deckNum}`);
+  if (isPlaying && !turntableStates[deckNum].isDragging) {
+    turntable.classList.add('playing');
+  } else {
+    turntable.classList.remove('playing');
+  }
+}
+
+function getAngleFromEvent(e, rect) {
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return Math.atan2(clientY - centerY, clientX - centerX) * 180 / Math.PI;
+}
+
+function setupTurntableInteraction(deckNum) {
+  const container = $(`turntableContainer${deckNum}`);
+  const turntable = $(`turntable${deckNum}`);
+  const player = deckNum === 1 ? ytPlayer1 : ytPlayer2;
+  const state = turntableStates[deckNum];
+
+  function updateRotation(angle) {
+    state.rotation = angle;
+    turntable.style.transform = `rotate(${angle}deg)`;
+    
+    // Update track position based on rotation
+    const dur = safeGetDuration(player);
+    if (dur > 0 && state.isDragging) {
+      // Normalize angle to 0-360 and map to track duration
+      const normalizedAngle = ((angle % 360) + 360) % 360;
+      const trackPosition = (normalizedAngle / 360) * dur;
+      safeSeek(player, trackPosition);
+    }
+  }
+
+  function handleStart(e) {
+    state.isDragging = true;
+    state.lastAngle = state.rotation;
+    const rect = container.getBoundingClientRect();
+    state.startAngle = getAngleFromEvent(e, rect) - state.rotation;
+    
+    turntable.classList.add('dragging');
+    turntable.classList.remove('playing');
+    e.preventDefault();
+  }
+
+  function handleMove(e) {
+    if (!state.isDragging) return;
+    const rect = container.getBoundingClientRect();
+    const currentAngle = getAngleFromEvent(e, rect);
+    const newRotation = currentAngle - state.startAngle;
+    updateRotation(newRotation);
+    e.preventDefault();
+  }
+
+  function handleEnd(e) {
+    state.isDragging = false;
+    turntable.classList.remove('dragging');
+    
+    // Resume playing if it was playing before
+    if (safeIsPlaying(player)) {
+      turntable.classList.add('playing');
+    }
+    e.preventDefault();
+  }
+
+  // Mouse events
+  container.addEventListener('mousedown', handleStart);
+  window.addEventListener('mousemove', handleMove);
+  window.addEventListener('mouseup', handleEnd);
+
+  // Touch events
+  container.addEventListener('touchstart', handleStart, { passive: false });
+  window.addEventListener('touchmove', handleMove, { passive: false });
+  window.addEventListener('touchend', handleEnd, { passive: false });
+}
+
+/* ========== TIME-CODE UPDATES ========== */
+function formatTime(totalSeconds){
+  const mins = Math.floor(totalSeconds / 60);
+  const secs = Math.floor(totalSeconds % 60);
+  return `${mins}:${secs.toString().padStart(2,'0')}`;
+}
+
+function updateTimeCodes(){
+  /* Deck 1 */
+  const dur1 = safeGetDuration(ytPlayer1);
+  const time1 = safeGetCurrentTime(ytPlayer1);
+  const remaining1 = Math.max(0, dur1 - time1);
+  $('deck1Time').textContent = formatTime(remaining1);
+
+  /* Deck 2 */
+  const dur2 = safeGetDuration(ytPlayer2);
+  const time2 = safeGetCurrentTime(ytPlayer2);
+  const remaining2 = Math.max(0, dur2 - time2);
+  $('deck2Time').textContent = formatTime(remaining2);
+}
+
+/* ========== PEAKS / LOOP ========== */
+function buildRandomPeaks(canv){
+  const len = canv.width;
+  canv.peaks = new Array(len);
+  for(let i = 0; i < len; i++) canv.peaks[i] = Math.random() * 0.6 + 0.2;
+}
+
+function buildPeaks(canv){
+  const len = canv.width;
+  canv.peaks = new Array(len).fill(0);
+  let idx = 0;
+  const grab = () => {
+    if(idx >= len) return;
+    if(canv.analyser && canv.dataArray){
+      canv.analyser.getByteFrequencyData(canv.dataArray);
+      const maxVal = Math.max(...canv.dataArray);
+      canv.peaks[idx] = maxVal / 255;
+    }
+    idx++;
+    requestAnimationFrame(grab);
+  };
+  grab();
+}
+
+/* ---- FILLED waveform (entire track) ---- */
+function drawWaveform(canv, pct, colourFill, reverse = false){
+  const ctx = canv.getContext('2d');
+  
+  // Clear canvas properly accounting for device pixel ratio
+  const dpr = window.devicePixelRatio || 1;
+  const displayWidth = canv.clientWidth;
+  const displayHeight = canv.clientHeight;
+  
+  ctx.clearRect(0, 0, canv.width, canv.height);
+  
+  if(!canv.peaks || canv.peaks.length === 0) return;
+  
+  const centreY = displayHeight / 2;
+  const offset = pct * canv.peaks.length;
+  const played = Math.floor(pct * displayWidth);
+
+  /* 1. FULL outline (entire song) */
+  ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  for(let x = 0; x < displayWidth; x++){
+    const idx = offset + x; 
+    const idxL = Math.floor(idx) % canv.peaks.length;
+    const idxR = (idxL + 1) % canv.peaks.length; 
+    const frac = idx - Math.floor(idx);
+    const h = (canv.peaks[idxL] * (1 - frac) + canv.peaks[idxR] * frac);
+    const yTop = centreY - h * centreY * 0.8;
+    const drawX = reverse ? displayWidth - x : x;
+    if(x === 0) ctx.moveTo(drawX + 0.5, yTop); 
+    else ctx.lineTo(drawX + 0.5, yTop);
+  }
+  for(let x = displayWidth - 1; x >= 0; x--){
+    const idx = offset + x; 
+    const idxL = Math.floor(idx) % canv.peaks.length;
+    const idxR = (idxL + 1) % canv.peaks.length; 
+    const frac = idx - Math.floor(idx);
+    const h = (canv.peaks[idxL] * (1 - frac) + canv.peaks[idxR] * frac);
+    const yBot = centreY + h * centreY * 0.8;
+    const drawX = reverse ? displayWidth - x : x;
+    ctx.lineTo(drawX + 0.5, yBot);
+  }
+  ctx.closePath(); 
+  ctx.stroke();
+
+  /* 2. FILLED solid for PLAYED portion */
+  ctx.fillStyle = colourFill;
+  ctx.shadowColor = colourFill + '60'; 
+  ctx.shadowBlur = 4;
+  ctx.beginPath();
+  for(let x = 0; x < played; x++){
+    const idx = offset + x; 
+    const idxL = Math.floor(idx) % canv.peaks.length;
+    const idxR = (idxL + 1) % canv.peaks.length; 
+    const frac = idx - Math.floor(idx);
+    const h = (canv.peaks[idxL] * (1 - frac) + canv.peaks[idxR] * frac);
+    const yTop = centreY - h * centreY * 0.8;
+    const drawX = reverse ? displayWidth - x : x;
+    if(x === 0) ctx.moveTo(drawX + 0.5, centreY); 
+    else ctx.lineTo(drawX + 0.5, yTop);
+  }
+  const finalX = reverse ? displayWidth - played : played;
+  ctx.lineTo(finalX, centreY); 
+  ctx.closePath(); 
+  ctx.fill();
+
+  ctx.beginPath();
+  for(let x = 0; x < played; x++){
+    const idx = offset + x; 
+    const idxL = Math.floor(idx) % canv.peaks.length;
+    const idxR = (idxL + 1) % canv.peaks.length; 
+    const frac = idx - Math.floor(idx);
+    const h = (canv.peaks[idxL] * (1 - frac) + canv.peaks[idxR] * frac);
+    const yBot = centreY + h * centreY * 0.8;
+    const drawX = reverse ? displayWidth - x : x;
+    if(x === 0) ctx.moveTo(drawX + 0.5, centreY); 
+    else ctx.lineTo(drawX + 0.5, yBot);
+  }
+  ctx.lineTo(finalX, centreY); 
+  ctx.closePath(); 
+  ctx.fill();
+  ctx.shadowColor = 'transparent';
+
+  /* 3. thin play-head line */
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(finalX - 0.5, 0, 1, displayHeight);
+}
+
+function startLoop(canv, player, colourFill, reverse = false, deckNum){
+  function loop(){
+    const dur = safeGetDuration(player);
+    const time = safeGetCurrentTime(player);
+    if(dur > 0 && time >= 0){
+      const pct = time / dur;
+      drawWaveform(canv, pct, colourFill, reverse);
+      updateTimeCodes();   // update time-codes every frame
+      
+      // Update turntable rotation based on track position when not dragging
+      if (!turntableStates[deckNum].isDragging) {
+        const rotation = (time / dur) * 360;
+        turntableStates[deckNum].rotation = rotation;
+        $(`turntable${deckNum}`).style.transform = `rotate(${rotation}deg)`;
+      }
+      
+      updateTurntable(deckNum, safeIsPlaying(player));
+      
+      // Check loop if active
+      if (cueLoopData[deckNum].loopActive && cueLoopData[deckNum].loopIn && cueLoopData[deckNum].loopOut) {
+        if (time >= cueLoopData[deckNum].loopOut) {
+          safeSeek(player, cueLoopData[deckNum].loopIn);
+        }
+      }
+    }
+    if (!isResizing) {
+      requestAnimationFrame(loop);
+    }
+  }
+  loop();
+}
+
+function hookAudio(canv, player, deckNum){
+  if (!masterCtx) {
+    console.warn('Audio context not initialized, using random peaks');
+    buildRandomPeaks(canv);
+    return;
+  }
+  
+  const an = masterCtx.createAnalyser(); 
+  an.fftSize = 2048;
+  const data = new Uint8Array(an.frequencyBinCount);
+  canv.analyser = an; 
+  canv.dataArray = data;
+  
+  if (!canv.buildPeaks) canv.buildPeaks = () => buildPeaks(canv);
+  
+  setTimeout(() => {
+    try {
+      const vid = player.getIframe().contentWindow.document.querySelector('video');
+      if(!vid) throw new Error('Video element not found');
+      const src = masterCtx.createMediaElementSource(vid);
+      src.connect(masterEQFilters.low);
+      masterEQFilters.low.connect(masterEQFilters.mid);
+      masterEQFilters.mid.connect(masterEQFilters.high);
+      masterEQFilters.high.connect(an);
+      an.connect(masterCtx.destination);
+    } catch(e) {
+      console.warn('Audio hooking failed, using random peaks:', e);
+      buildRandomPeaks(canv);
+    }
+  }, 500);
+}
+
+/* ========== MASTER EQ KNOBS ========== */
+function addMasterEQControls(){
+  const knobs = document.querySelectorAll('.eq-knob');
+  const maxRotation = 135;
+  let currentRotations = { low: 0, mid: 0, high: 0 };
+  knobs.forEach(knob => {
+    let isDragging = false, startY = 0;
+    const band = knob.dataset.filter;
+    const indicator = knob.querySelector('.eq-indicator');
+    const valueDisplay = $(`master-${band}-value`);
+    knob.style.transform = `rotate(${currentRotations[band]}deg)`;
+    function updateKnob(y){
+      const deltaY = startY - y;
+      const sensitivity = 0.5;
+      currentRotations[band] = Math.max(-maxRotation, Math.min(maxRotation, currentRotations[band] + (deltaY * sensitivity)));
+      knob.style.transform = `rotate(${currentRotations[band]}deg)`;
+      const gain = (currentRotations[band] / maxRotation) * 12;
+      valueDisplay.textContent = `${gain.toFixed(1)}dB`;
+      if(masterEQFilters[band]) masterEQFilters[band].gain.value = gain;
+      startY = y;
+    }
+    knob.addEventListener('mousedown', e => { isDragging = true; startY = e.clientY; e.preventDefault(); });
+    window.addEventListener('mousemove', e => { if(!isDragging) return; updateKnob(e.clientY); e.preventDefault(); });
+    window.addEventListener('mouseup', () => { isDragging = false; });
+    knob.addEventListener('touchstart', e => { isDragging = true; startY = e.touches[0].clientY; e.preventDefault(); }, {passive:false});
+    window.addEventListener('touchmove', e => { if(!isDragging) return; updateKnob(e.touches[0].clientY); e.preventDefault(); }, {passive:false});
+    window.addEventListener('touchend', () => { isDragging = false; });
+  });
+}
+
+/* ========== CROSSFADER ========== */
+function updateVolumes(){
+  if (!ytPlayer1 || !ytPlayer2) return;
+  const vol1 = Math.max(0, Math.min(100, (1 - crossfaderPos) * 100));
+  const vol2 = Math.max(0, Math.min(100, crossfaderPos * 100));
+  safeSetVolume(ytPlayer1, vol1);
+  safeSetVolume(ytPlayer2, vol2);
+}
+
+function autoFadeTo(targetPos, duration = 2000){
+  if(autoFadeAnimation) cancelAnimationFrame(autoFadeAnimation);
+  const startPos = crossfaderPos;
+  const startTime = performance.now();
+  const deltaPos = targetPos - startPos;
+  function animate(currentTime){
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const easeProgress = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+    const currentPos = startPos + (deltaPos * easeProgress);
+    const rect = $('crossfaderTrack').getBoundingClientRect();
+    crossfaderPos = currentPos;
+    $('crossfaderHandle').style.left = (currentPos * 100) + '%';
+    updateVolumes();
+    if(progress < 1) autoFadeAnimation = requestAnimationFrame(animate); else autoFadeAnimation = null;
+  }
+  animate(performance.now());
+}
+
+function setupCrossfader(){
+  const track = $('crossfaderTrack');
+  const handle = $('crossfaderHandle');
+  let isDragging = false;
+  function update(x){
+    const rect = track.getBoundingClientRect();
+    x = Math.max(0, Math.min(x, rect.width));
+    crossfaderPos = x / rect.width;
+    handle.style.left = (crossfaderPos * 100) + '%';
+    updateVolumes();
+  }
+  track.addEventListener('mousedown', e => { isDragging = true; update(e.clientX - track.getBoundingClientRect().left); });
+  window.addEventListener('mousemove', e => { if(!isDragging) return; update(e.clientX - track.getBoundingClientRect().left); });
+  window.addEventListener('mouseup', () => { isDragging = false; });
+  const rect = track.getBoundingClientRect();
+  track.addEventListener('touchstart', e => { isDragging = true; update(e.touches[0].clientX - rect.left); e.preventDefault(); }, {passive:false});
+  window.addEventListener('touchmove', e => { if(!isDragging) return; update(e.touches[0].clientX - rect.left); e.preventDefault(); }, {passive:false});
+  window.addEventListener('touchend', () => { isDragging = false; e.preventDefault(); }, {passive:false});
+}
+
+/* ========== WAVEFORM TOUCH / touchstart ========== */
+function addSeparateTouchControls(){
+  const wrap1 = $('waveWrap1');
+  const wrap2 = $('waveWrap2');
+  
+  function addWaveControls(wrap, player, reverse = false){
+    const scrub = (ev) => {
+      const dur = safeGetDuration(player);
+      if(dur === 0) return;
+      const rect = wrap.getBoundingClientRect();
+      let r = (ev.clientX - rect.left) / rect.width;
+      if(reverse) r = 1 - r;
+      safeSeek(player, Math.max(0, Math.min(1, r)) * dur);
+    };
+    wrap.addEventListener('touchstart', scrub);
+    wrap.addEventListener('mousedown', e => { wrap.dragging = true; scrub(e); });
+    wrap.addEventListener('touchstart', e => { wrap.dragging = true; scrub(e.touches[0]); e.preventDefault(); }, {passive:false});
+  }
+  
+  addWaveControls(wrap1, ytPlayer1, false);
+  addWaveControls(wrap2, ytPlayer2, true);
+  
+  window.addEventListener('mousemove', e => {
+    if(wrap1.dragging) {
+      const dur = safeGetDuration(ytPlayer1);
+      if(dur === 0) return;
+      const rect = wrap1.getBoundingClientRect();
+      let r = (e.clientX - rect.left) / rect.width;
+      safeSeek(ytPlayer1, Math.max(0, Math.min(1, r)) * dur);
+    }
+    if(wrap2.dragging) {
+      const dur = safeGetDuration(ytPlayer2);
+      if(dur === 0) return;
+      const rect = wrap2.getBoundingClientRect();
+      let r = 1 - ((e.clientX - rect.left) / rect.width);
+      safeSeek(ytPlayer2, Math.max(0, Math.min(1, r)) * dur);
+    }
+  });
+  
+  window.addEventListener('mouseup', () => { wrap1.dragging = false; wrap2.dragging = false; });
+  window.addEventListener('touchmove', e => {
+    if(wrap1.dragging) {
+      const dur = safeGetDuration(ytPlayer1);
+      if(dur === 0) return;
+      const rect = wrap1.getBoundingClientRect();
+      let r = (e.touches[0].clientX - rect.left) / rect.width;
+      safeSeek(ytPlayer1, Math.max(0, Math.min(1, r)) * dur);
+    }
+    if(wrap2.dragging) {
+      const dur = safeGetDuration(ytPlayer2);
+      if(dur === 0) return;
+      const rect = wrap2.getBoundingClientRect();
+      let r = 1 - ((e.touches[0].clientX - rect.left) / rect.width);
+      safeSeek(ytPlayer2, Math.max(0, Math.min(1, r)) * dur);
+    }
+    e.preventDefault();
+  }, {passive:false});
+  window.addEventListener('touchend', () => { wrap1.dragging = false; wrap2.dragging = false; e.preventDefault(); }, {passive:false});
+}
+
+/* ========== SOUND-FX ========== */
+function initSoundEffects(){
+  if (typeof AudioContext === 'undefined' && typeof webkitAudioContext === 'undefined') {
+    console.warn('Web Audio API not supported');
+    return null;
+  }
+  fxCtx = new (window.AudioContext||window.webkitAudioContext)();
+  fxMasterGain = fxCtx.createGain();
+  fxMasterGain.gain.value = 0.3;
+  fxMasterGain.connect(fxCtx.destination);
+}
+
+function createEcho(){
+  if(!fxCtx) {
+    console.warn('FX not available');
+    return null;
+  }
+  const delay = fxCtx.createDelay();
+  delay.delayTime.value = 0.3;
+  const feedback = fxCtx.createGain();
+  feedback.gain.value = 0.4;
+  const wet = fxCtx.createGain();
+  wet.gain.value = 0.5;
+  delay.connect(feedback);
+  feedback.connect(delay);
+  delay.connect(wet);
+  wet.connect(fxMasterGain);
+  return { delay, feedback, wet };
+}
+
+function createReverb(){
+  if(!fxCtx) return null;
+  const convolver = fxCtx.createConvolver();
+  const length = fxCtx.sampleRate * 2;
+  const impulse = fxCtx.createBuffer(2, length, fxCtx.sampleRate);
+  for(let channel = 0; channel < 2; channel++){
+    const channelData = impulse.getChannelData(channel);
+    for(let i = 0; i < length; i++) channelData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2);
+  }
+  convolver.buffer = impulse;
+  const wet = fxCtx.createGain();
+  wet.gain.value = 0.4;
+  convolver.connect(wet);
+  wet.connect(fxMasterGain);
+  return { convolver, wet };
+}
+
+function createFilter(){
+  if(!fxCtx) return null;
+  const filter = fxCtx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.value = 1000;
+  filter.Q.value = 5;
+  const wet = fxCtx.createGain();
+  wet.gain.value = 0.6;
+  filter.connect(wet);
+  wet.connect(fxMasterGain);
+  return { filter, wet };
+}
+
+function createFlanger(){
+  if(!fxCtx) return null;
+  const delay = fxCtx.createDelay();
+  delay.delayTime.value = 0.005;
+  const lfo = fxCtx.createOscillator();
+  lfo.frequency.value = 0.5;
+  const lfoGain = fxCtx.createGain();
+  lfoGain.gain.value = 0.002;
+  const wet = fxCtx.createGain();
+  wet.gain.value = 0.5;
+  lfo.connect(lfoGain);
+  lfoGain.connect(delay.delayTime);
+  delay.connect(wet);
+  wet.connect(fxMasterGain);
+  lfo.start();
+  return { delay, lfo, lfoGain, wet };
+}
+
+function createDistortion(){
+  if(!fxCtx) return null;
+  const waveshaper = fxCtx.createWaveShaper();
+  const amount = 50;
+  const samples = 44100;
+  const curve = new Float32Array(samples);
+  for(let i = 0; i < samples; i++){
+    const x = (i * 2) / samples - 1;
+    curve[i] = ((3 + amount) * x * 20 * Math.PI / 180) / (Math.PI + amount * Math.abs(x));
+  }
+  waveshaper.curve = curve;
+  const wet = fxCtx.createGain();
+  wet.gain.value = 0.3;
+  waveshaper.connect(wet);
+  wet.connect(fxMasterGain);
+  return { waveshaper, wet };
+}
+
+function createGate(){
+  if(!fxCtx) return null;
+  const gate = fxCtx.createGain();
+  const lfo = fxCtx.createOscillator();
+  lfo.frequency.value = 4;
+  const lfoGain = fxCtx.createGain();
+  lfoGain.gain.value = 0.8;
+  lfo.connect(lfoGain);
+  lfoGain.connect(gate.gain);
+  gate.connect(fxMasterGain);
+  lfo.start();
+  return { gate, lfo, lfoGain };
+}
+
+function createPhaser(){
+  if(!fxCtx) return null;
+  const input = fxCtx.createGain();
+  const output = fxCtx.createGain();
+  const stages = 6;
+  const filters = [];
+  for(let i = 0; i < stages; i++){
+    const filter = fxCtx.createBiquadFilter();
+    filter.type = 'allpass';
+    filter.frequency.value = 800 + i * 200;
+    filters.push(filter);
+    if(i === 0) input.connect(filter); else filters[i-1].connect(filter);
+  }
+  filters[filters.length-1].connect(output);
+  const wet = fxCtx.createGain();
+  wet.gain.value = 0.5;
+  output.connect(wet);
+  wet.connect(fxMasterGain);
+  return { input, output, filters, wet };
+}
+
+function createChop(){
+  if(!fxCtx) return null;
+  const chopper = fxCtx.createGain();
+  const lfo = fxCtx.createOscillator();
+  lfo.frequency.value = 8;
+  const lfoGain = fxCtx.createGain();
+  lfoGain.gain.value = 0.9;
+  lfo.connect(lfoGain);
+  lfoGain.connect(chopper.gain);
+  chopper.connect(fxMasterGain);
+  lfo.start();
+  return { chopper, lfo, lfoGain };
+}
+
+function triggerEffect(effectType){
+  if(!fxCtx) {
+    console.warn('FX system not available');
+    return;
+  }
+  
+  const oscillator = fxCtx.createOscillator();
+  const gainNode = fxCtx.createGain();
+  oscillator.frequency.value = 440;
+  gainNode.gain.value = 0.1;
+  oscillator.connect(gainNode);
+  
+  let fxNode = null;
+  switch(effectType){
+    case 'echo': fxNode = createEcho(); break;
+    case 'reverb': fxNode = createReverb(); break;
+    case 'filter': fxNode = createFilter(); break;
+    case 'flanger': fxNode = createFlanger(); break;
+    case 'distort': fxNode = createDistortion(); break;
+    case 'gate': fxNode = createGate(); break;
+    case 'phaser': fxNode = createPhaser(); break;
+    case 'chop': fxNode = createChop(); break;
+  }
+  
+  if (fxNode) {
+    gainNode.connect(fxNode.delay || fxNode.convolver || fxNode.filter || fxNode.waveshaper || fxNode.gate || fxNode.input || fxNode.chopper);
+  } else {
+    gainNode.connect(fxMasterGain);
+  }
+  
+  oscillator.start();
+  gainNode.gain.exponentialRampToValueAtTime(0.01, fxCtx.currentTime + 0.5);
+  oscillator.stop(fxCtx.currentTime + 0.5);
+  console.log(`Triggered ${effectType} effect`);
+}
+
+/* ========== YOUTUBE ========== */
+const tag = document.createElement('script');
+tag.src = 'https://www.youtube.com/iframe_api';
+document.head.appendChild(tag);
+
+window.onYouTubeIframeAPIReady = () => {
+  ytPlayer1 = new YT.Player('player1', {
+    videoId: videoId1, width: '100%', height: '100%',
+    playerVars: { autoplay: 0, controls: 1, rel: 0, showinfo: 0 },
+    events: { onReady: onPlayer1Ready, onStateChange: onPlayer1StateChange }
+  });
+  ytPlayer2 = new YT.Player('player2', {
+    videoId: videoId2, width: '100%', height: '100%',
+    playerVars: { autoplay: 0, controls: 1, rel: 0, showinfo: 0 },
+    events: { onReady: onPlayer2Ready, onStateChange: onPlayer2StateChange }
+  });
+};
+
+function onPlayer1Ready(){
+  const canv = $('waveCanvas1');
+  canv.buildPeaks = () => buildPeaks(canv);
+  buildRandomPeaks(canv);
+  hookAudio(canv, ytPlayer1, 1);
+  setupTurntableInteraction(1);
+  startLoop(canv, ytPlayer1, '#0f0', false, 1);
+  
+  // Start auto-mix monitoring if enabled
+  if (autoMixEnabled) {
+    startAutoMixMonitoring();
+  }
+}
+function onPlayer2Ready(){
+  const canv = $('waveCanvas2');
+  canv.buildPeaks = () => buildPeaks(canv);
+  buildRandomPeaks(canv);
+  hookAudio(canv, ytPlayer2, 2);
+  setupTurntableInteraction(2);
+  startLoop(canv, ytPlayer2, '#f00', true, 2);
+}
+function onPlayer1StateChange(e){
+  updateTurntable(1, safeIsPlaying(ytPlayer1));
+}
+function onPlayer2StateChange(e){
+  updateTurntable(2, safeIsPlaying(ytPlayer2));
+}
+
+/* ========== BUTTONS ========== */
+$('playBtn1').addEventListener('touchstart', () => {
+  if(!ytPlayer1) return;
+  safeIsPlaying(ytPlayer1) ? ytPlayer1.pauseVideo() : ytPlayer1.playVideo();
+});
+$('playBtn2').addEventListener('touchstart', () => {
+  if(!ytPlayer2) return;
+  safeIsPlaying(ytPlayer2) ? ytPlayer2.pauseVideo() : ytPlayer2.playVideo();
+});
+$('autoMixLeft').addEventListener('touchstart', () => autoFadeTo(0, 2000));
+$('autoMixRight').addEventListener('touchstart', () => autoFadeTo(1, 2000));
+
+/* CUE LOOP BUTTONS */
+$('cue1Set').addEventListener('touchstart', () => setCuePoint(1));
+$('cue1Jump').addEventListener('touchstart', () => jumpToCuePoint(1));
+$('loop1In').addEventListener('touchstart', () => setLoopIn(1));
+$('loop1Out').addEventListener('touchstart', () => setLoopOut(1));
+$('loop1Active').addEventListener('touchstart', () => toggleLoop(1));
+$('cue1Clear').addEventListener('touchstart', () => clearCueLoop(1));
+
+$('cue2Set').addEventListener('touchstart', () => setCuePoint(2));
+$('cue2Jump').addEventListener('touchstart', () => jumpToCuePoint(2));
+$('loop2In').addEventListener('touchstart', () => setLoopIn(2));
+$('loop2Out').addEventListener('touchstart', () => setLoopOut(2));
+$('loop2Active').addEventListener('touchstart', () => toggleLoop(2));
+$('cue2Clear').addEventListener('touchstart', () => clearCueLoop(2));
+
+/* Loop length buttons */
+document.querySelectorAll('.loop-length-btn').forEach(btn => {
+  btn.addEventListener('touchstart', () => {
+    const deckNum = parseInt(btn.dataset.deck);
+    const length = parseInt(btn.dataset.length);
+    setAutoLoopLength(deckNum, length);
+  });
+});
+
+/* AUTO-MIX BUTTONS */
+$('autoMixToggle').addEventListener('touchstart', toggleAutoMix);
+$('nextTrackBtn').addEventListener('touchstart', manualNextTrack);
+
+/* PLAYLIST BUTTONS */
+$('assignDeck1').addEventListener('touchstart', () => {
+  currentAssignment = 1;
+  updateAssignmentButtons();
+});
+
+$('assignDeck2').addEventListener('touchstart', () => {
+  currentAssignment = 2;
+  updateAssignmentButtons();
+});
+
+$('addTrackBtn').addEventListener('touchstart', addNewTrack);
+
+/* BPM BUTTONS */
+$('tapTempo1').addEventListener('touchstart', () => tapTempo(1));
+$('tapTempo2').addEventListener('touchstart', () => tapTempo(2));
+$('syncBPM').addEventListener('touchstart', syncBPM);
+$('resetBPM').addEventListener('touchstart', resetBPM);
+
+/* FX buttons */
+document.getElementById('fxEcho').addEventListener('touchstart', () => triggerEffect('echo'));
+document.getElementById('fxReverb').addEventListener('touchstart', () => triggerEffect('reverb'));
+document.getElementById('fxFilter').addEventListener('touchstart', () => triggerEffect('filter'));
+document.getElementById('fxFlanger').addEventListener('touchstart', () => triggerEffect('flanger'));
+document.getElementById('fxDistort').addEventListener('touchstart', () => triggerEffect('distort'));
+document.getElementById('fxGate').addEventListener('touchstart', () => triggerEffect('gate'));
+document.getElementById('fxPhaser').addEventListener('touchstart', () => triggerEffect('phaser'));
+document.getElementById('fxChop').addEventListener('touchstart', () => triggerEffect('chop'));
+
+
+
+////// . 
+/* ========== intResize – first-time /* 1. one-shot canvas sizing + first draw */
+/* ---------- one-shot mobile-safe sizing ---------- */
+function initResize(){
+  /* wait one frame so CSS flex has finished */
+  requestAnimationFrame(()=>{
+    const dpr = window.devicePixelRatio || 1;
+
+    ['waveCanvas1','waveCanvas2'].forEach(id=>{
+      const c   = $(id);
+      const css = c.getBoundingClientRect();   // actual rendered size
+      const w   = css.width;
+      const h   = css.height;
+
+      /* set drawing buffer to screen pixels */
+      c.width  = Math.round(w * dpr);
+      c.height = Math.round(h * dpr);
+      c.style.width  = w + 'px';
+      c.style.height = h + 'px';
+
+      const ctx = c.getContext('2d');
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+
+      buildRandomPeaks(c);          // first (and last) data
+      drawWaveform(c,0, id==='waveCanvas1'?'#0f0':'#f00', id==='waveCanvas2');
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  
+  initResize();   
+  // ← single call, no resize listener
+ 
+});
+
+
+
+/* ========== INIT ========== */
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize audio context safely
+  try {
+    masterCtx = new (window.AudioContext||window.webkitAudioContext)();
+    for(const [band, setting] of Object.entries(EQ_SETTINGS)){
+      const filter = masterCtx.createBiquadFilter();
+      filter.type = setting.type;
+      filter.frequency.value = setting.freq;
+      filter.gain.value = 0;
+      filter.Q.value = 1;
+      masterEQFilters[band] = filter;
+    }
+    initSoundEffects();
+  } catch (e) {
+    console.warn('Web Audio API not available:', e);
+    masterCtx = null;
+  }
+  
+  // Center crossfader on load
+  centerCrossfader();
+  
+  // Initialize BPM display
+  updateBPMDisplay();
+  
+  // Render initial playlist
+  renderPlaylist();
+  updateAssignmentButtons();
+  
+  // Initialize loop length buttons
+  document.querySelectorAll('.loop-length-btn[data-deck="1"][data-length="8"]').forEach(btn => btn.classList.add('active'));
+  document.querySelectorAll('.loop-length-btn[data-deck="2"][data-length="8"]').forEach(btn => btn.classList.add('active'));
+  
+  // Use optimized resize handler
+  //window.addEventListener('resize', handleResize, { passive: true });
+  
+  initResize();
+  addMasterEQControls();
+  setupCrossfader();
+  addSeparateTouchControls();
+});
+
+///SeArCh
+
+
+
+const searchButton = document.getElementById("searchButton");
+searchButton.addEventListener('touchstart', function(event) {
+//////////////////youtube api
+
+ const searchQuery = document.getElementById('searchQuery').value;
+
+//////////////////
+
+  //////rapid API
+  const data = null;
+
+const xhr = new XMLHttpRequest();
+xhr.withCredentials = true;
+
+xhr.addEventListener('readystatechange', function () {
+	if (this.readyState === this.DONE) {
+		const settings=this.responseText
+		//loop through json
+
+/////
+const parsed = JSON.parse(settings);   // {videos:[...]}
+const list   = parsed.videos;           // the real array
+///build list
+list.forEach(({ id, title }) => 
+
+//console.log(`ID: ${id}  |  Title: ${title}`)
+
+createplaylist(id,title)
+//playlist.push({id: id,title: title});
+);
+//////////
+		
+		//renderPlaylist()
+		//////////
+	}
+});
+
+xhr.open('GET', 'https://youtube-search-unlimited.p.rapidapi.com/ytsearch/?query='+searchQuery);
+xhr.setRequestHeader('x-rapidapi-key', 'f4313bded7msh057450116fa426ep1575ebjsn6d20c584e20b');
+xhr.setRequestHeader('x-rapidapi-host', 'youtube-search-unlimited.p.rapidapi.com');
+
+xhr.send(data);
+/////
+
+          
+}) 
+
+
+
+////////////creat playlist
+function createplaylist(i,t){
+	const search = {
+								id: i,
+								title: t,
+								bpm: 120
+							};
+							playlist.push(search);
+							renderPlaylist()
+}
+///
+
+</script>
+</body>
+</html>
