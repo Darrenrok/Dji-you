@@ -818,7 +818,7 @@ document.addEventListener('DOMContentLoaded', () => {
 ///////////background play test 
 document.addEventListener("visibilitychange", () => { if (document.hidden) { setTimeout(function () { if (ytplayer1_playing===1) {ytplayer2_playing=0;  ytPlayer1.playVideo(); } }, 500); } else {ytplayer2_playing=1;ytPlayer2.playVideo()}});
 
-document.addEventListener("visibilitychange", () => { if (document.hidden) { setTimeout(function () { if (ytplayer2_playing===1) {ytplayer1_playing=0;  ytPlayer2.playVideo();} }, 500); } else {}});
+document.addEventListener("visibilitychange", () => { if (document.hidden) { setTimeout(function () { if (ytplayer2_playing===1) {ytplayer1_playing=0;  ytPlayer2.playVideo();} }, 500); } else {ytplayer1_playing=1;ytPlayer1.playVideo()}});
 
 //document.addEventListener("visibilitychange", () => { if (document.hidden) { setTimeout(function () { if (ytPlayer2) { ytPlayer2.playVideo();} }, 500); } else {ytPlayer1.playVideo()}});
 //////////////////////bpm
