@@ -1,0 +1,15 @@
+{
+  "name": "Streamers",
+  "short_name": "Streamers",
+  "start_url": " http://127.0.0.1:5001/s/13bb2cf13fab",
+  "display": "standalone",
+  "background_color": "#0d0d0d",
+  "theme_color": "#C8FF00",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/686/686589.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
