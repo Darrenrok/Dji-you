@@ -1384,7 +1384,7 @@
             <div class="logo" onclick="showView('home')">
                 <div>
                     <div>ANIME ONE</div>
-                    <div class="logo-sub">◭ STREAM INTERFACE v2.4 ◭</div>
+                    <div class="logo-sub">◭ STREAM INTERFACE v8 ◭</div>
                 </div>
             </div>
         </div>
@@ -1541,7 +1541,7 @@
 
         const SOURCES = {
             vidlink: { name: 'VIDLINK', type: 'iframe', getUrl: (malId, ep, subdub) => `https://vidlink.pro/anime/${malId}/${ep}/${subdub}?fallback=true&autoplay=true&title=true&poster=true` },
-            megaplay: { name: 'MEGAPLAY', type: 'iframe', getUrl: (malId, ep, subdub) => `https://animeplay.cfd/stream/mal/${malId}/${ep}/${subdub}` },
+            megaplay: { name: 'MEGAPLAY', type: 'iframe', getUrl: (malId, ep, subdub) => `https://animeplay.cfd/stream/mal/${malId}/${ep}/${subdub}?fallback=true&autoplay=true&title=true&poster=true` },
             animeapi: { name: 'ANIMEAPI', type: 'iframe', getUrl: (malId, ep, subdub) => `https://api.animeapi.dev/stream/${malId}/${ep}/${subdub}` },
             animegg: { name: 'ANIMEGG', type: 'iframe', getUrl: (malId, ep, subdub) => `https://animegg.org/embed/mal/${malId}/${ep}/${subdub}` },
             animefox: { name: 'ANIMEFOX', type: 'iframe', getUrl: (malId, ep, subdub) => `https://animefox.tv/embed/mal/${malId}/${ep}/${subdub}` },
