@@ -1384,7 +1384,7 @@
             <div class="logo" onclick="showView('home')">
                 <div>
                     <div>ANIME ONE</div>
-                    <div class="logo-sub">◭ STREAM INTERFACE v8 ◭</div>
+                    <div class="logo-sub">◭ STREAM INTERFACE v8.1 ◭</div>
                 </div>
             </div>
         </div>
@@ -2208,6 +2208,28 @@
                 startHeaderAutoHide();
             }
         });
+
+        // Grab the iframe and access the inner document
+// Run the code every 3 seconds (3000 ms)
+let unmuteInterval = setInterval(function() {
+    let iframe = document.getElementById("player-frame");
+    
+    try {
+        let innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+        let video = innerDoc.querySelector("video");
+        
+        if (video) {
+            video.muted = false;
+            console.log("Video unmuted!");
+            
+            // Stop the interval once successful
+            clearInterval(unmuteInterval); 
+        }
+    } catch (error) {
+        console.log("Cannot access iframe due to cross-origin security.");
+        clearInterval(unmuteInterval); // Stop to prevent endless errors
+    }
+}, 3000);
     </script>
 
 </body>
