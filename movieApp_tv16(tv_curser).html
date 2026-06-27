@@ -2121,6 +2121,9 @@ max-height: 600px;
       <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">Data Source</div>
       <div style="font-size:15px;font-weight:700;">The Movie Database (TMDB)</div>
     </div>
+	  <div style="padding:16px;background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border);">
+	 <div  id="fmhy" style="font-size:15px;font-weight:700;">FMHY</div>
+	  </div>
   </div>
 </div>
 
@@ -2332,7 +2335,13 @@ const API_KEY = '1317be01caea4fe63d92be7e4dfb95b6';
 const BASE = 'https://api.themoviedb.org/3';
 const IMG = 'https://image.tmdb.org/t/p';
 const MAL_CLIENT_ID = '90af69b1be46785e6ed7411db906dfda';
-//DOWNLOAD EPSODE
+
+//FMHY
+	document.getElementById('fmhy').addEventListener('click', () => {
+    window.location.href = 'https://fmhy.net/';
+  });
+	
+	//DOWNLOAD EPSODE
 function downloadepsode(id,s,e) {
   console.log(id);
   
