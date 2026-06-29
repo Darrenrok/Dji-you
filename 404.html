@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>404 - Page Not Found | Streamers</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0d;
+  --bg-elevated: #141414;
+  --bg-card: #1a1a1a;
+  --bg-hover: #252525;
+  --text: #ffffff;
+  --text-secondary: #a0a0a0;
+  --text-muted: #666666;
+  --accent: #C8FF00;
+  --accent-dark: #a8d900;
+  --accent-glow: rgba(200,255,0,0.25);
+  --border: #2a2a2a;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  padding: 20px;
+  position: relative;
+}
+
+/* Animated background particles */
+.bg-particles {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 50%;
+  opacity: 0;
+  animation: floatParticle 8s ease-in-out infinite;
+}
+
+@keyframes floatParticle {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.6; }
+  100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+}
+
+/* Glitch effect for 404 */
+.glitch-container {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.glitch {
+  font-family: 'Silkscreen', sans-serif;
+  font-size: clamp(80px, 20vw, 180px);
+  font-weight: 700;
+  color: var(--accent);
+  text-shadow: 0 0 20px var(--accent-glow);
+  position: relative;
+  animation: glitchSkew 3s infinite;
+}
+
+.glitch::before,
+.glitch::after {
+  content: '404';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch::before {
+  color: #ff0040;
+  animation: glitchTop 2s infinite linear alternate-reverse;
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+}
+
+.glitch::after {
+  color: #00ffff;
+  animation: glitchBottom 2s infinite linear alternate-reverse;
+  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+}
+
+@keyframes glitchSkew {
+  0%, 100% { transform: skew(0deg); }
+  20% { transform: skew(-2deg); }
+  40% { transform: skew(2deg); }
+  60% { transform: skew(-1deg); }
+  80% { transform: skew(1deg); }
+}
+
+@keyframes glitchTop {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-3px); }
+  40% { transform: translateX(3px); }
+  60% { transform: translateX(-1px); }
+  80% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes glitchBottom {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(3px); }
+  40% { transform: translateX(-3px); }
+  60% { transform: translateX(2px); }
+  80% { transform: translateX(-1px); }
+  100% { transform: translateX(0); }
+}
+
+/* Content */
+.content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+}
+
+.logo {
+  font-family: 'Silkscreen', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 40px;
+  transition: opacity 0.2s;
+}
+
+.logo:hover { opacity: 0.8; }
+
+.logo svg {
+  width: 24px;
+  height: 24px;
+}
+
+.title {
+  font-size: clamp(20px, 5vw, 28px);
+  font-weight: 800;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+/* Action buttons */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+  box-shadow: 0 4px 20px var(--accent-glow);
+}
+
+.btn-primary:hover { background: var(--accent-dark); }
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Suggestions */
+.suggestions {
+  text-align: left;
+}
+
+.suggestions h3 {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.suggestion-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 480px) {
+  .suggestion-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.suggestion-card {
+  aspect-ratio: 2/3;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  padding: 12px;
+}
+
+.suggestion-card:hover {
+  border-color: var(--accent);
+  transform: scale(1.03);
+  box-shadow: 0 4px 20px rgba(200,255,0,0.1);
+}
+
+.suggestion-card svg {
+  width: 28px;
+  height: 28px;
+  color: var(--accent);
+}
+
+.suggestion-card span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* Error code display */
+.error-code {
+  font-family: 'Silkscreen', sans-serif;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 30px;
+  letter-spacing: 2px;
+}
+
+/* TV focus states */
+.focusable {
+  outline: none;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.focusable:focus-visible,
+.focusable.tv-focus {
+  box-shadow: 0 0 0 3px var(--accent), 0 0 0 6px rgba(200,255,0,0.3);
+  transform: scale(1.03);
+  z-index: 10;
+  border-radius: var(--radius-md);
+}
+
+/* Scanline overlay */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.03;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.3) 2px,
+    rgba(0,0,0,0.3) 4px
+  );
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .glitch, .glitch::before, .glitch::after,
+  .particle {
+    animation: none !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Background particles -->
+<div class="bg-particles" id="particles"></div>
+
+<!-- Scanline overlay -->
+<div class="scanlines"></div>
+
+<div class="content">
+  <!-- Logo -->
+  <div class="logo focusable" tabindex="0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    Streamers
+  </div>
+
+  <!-- Glitch 404 -->
+  
+
+  <h1 class="title">Lost in the Stream</h1>
+  <p class="subtitle">
+   Contact Admin
+  </p>
+
+
+<script>
+// Generate floating particles
+const particlesContainer = document.getElementById('particles');
+for (let i = 0; i < 30; i++) {
+  const particle = document.createElement('div');
+  particle.className = 'particle';
+  particle.style.left = Math.random() * 100 + '%';
+  particle.style.animationDelay = Math.random() * 8 + 's';
+  particle.style.animationDuration = (6 + Math.random() * 6) + 's';
+  particle.style.width = (2 + Math.random() * 4) + 'px';
+  particle.style.height = particle.style.width;
+  particlesContainer.appendChild(particle);
+}
+
+// TV Remote Navigation
+const TVNav = {
+  enabled: false,
+  currentFocus: null,
+  focusableElements: [],
+  keyRepeatDelay: 120,
+  lastKeyTime: 0,
+
+  keys: {
+    UP: [38, 29460, 61538],
+    DOWN: [40, 29461, 61539],
+    LEFT: [37, 29462, 61540],
+    RIGHT: [39, 29463, 61541],
+    OK: [13, 29443, 61542],
+    BACK: [27, 461, 10009, 61543],
+  },
+
+  init() {
+    const ua = navigator.userAgent.toLowerCase();
+    const tvKeywords = ['smart-tv','smarttv','googletv','appletv','hbbtv','webos','tizen','roku','sony','samsung','lg','vizio','androidtv','firetv','bravia','xbox','playstation'];
+    const isTV = tvKeywords.some(kw => ua.includes(kw));
+    const isLargeScreen = window.innerWidth >= 1024 && window.innerHeight >= 576;
+    const hasNoHover = window.matchMedia('(hover: none)').matches;
+
+    if (isTV || (isLargeScreen && hasNoHover)) {
+      this.enabled = true;
+    }
+
+    document.addEventListener('keydown', (e) => this.handleKeyDown(e), true);
+    this.updateFocusableElements();
+    if (this.enabled) this.setInitialFocus();
+  },
+
+  updateFocusableElements() {
+    const selectors = [
+      '.focusable:not([style*="display: none"])',
+      'a[href]:not([style*="display: none"])',
+      'button:not([disabled]):not([style*="display: none"])'
+    ];
+    this.focusableElements = [];
+    selectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        if (this.isVisible(el) && !this.focusableElements.includes(el)) {
+          this.focusableElements.push(el);
+        }
+      });
+    });
+  },
+
+  isVisible(el) {
+    const rect = el.getBoundingClientRect();
+    const style = window.getComputedStyle(el);
+    return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+  },
+
+  setInitialFocus() {
+    const first = this.focusableElements[0];
+    if (first) this.focus(first);
+  },
+
+  focus(el) {
+    if (!el || !this.isVisible(el)) return;
+    if (this.currentFocus) this.currentFocus.classList.remove('tv-focus');
+    this.currentFocus = el;
+    el.classList.add('tv-focus');
+    el.focus({ preventScroll: true });
+    el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+  },
+
+  handleKeyDown(e) {
+    if (!this.enabled) return;
+    const keyCode = e.keyCode || e.which;
+    const key = e.key;
+    const isArrow = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(key);
+    const isEnter = key === 'Enter' || keyCode === 13;
+    const isBack = key === 'Backspace' || key === 'Escape' || keyCode === 27 || keyCode === 461;
+
+    if (!isArrow && !isEnter && !isBack) return;
+
+    const now = Date.now();
+    if (now - this.lastKeyTime < this.keyRepeatDelay) {
+      if (isArrow || isEnter) e.preventDefault();
+      return;
+    }
+    this.lastKeyTime = now;
+
+    if (this.keys.UP.includes(keyCode) || key === 'ArrowUp') {
+      e.preventDefault(); this.move('up');
+    } else if (this.keys.DOWN.includes(keyCode) || key === 'ArrowDown') {
+      e.preventDefault(); this.move('down');
+    } else if (this.keys.LEFT.includes(keyCode) || key === 'ArrowLeft') {
+      e.preventDefault(); this.move('left');
+    } else if (this.keys.RIGHT.includes(keyCode) || key === 'ArrowRight') {
+      e.preventDefault(); this.move('right');
+    } else if (this.keys.OK.includes(keyCode) || isEnter) {
+      e.preventDefault(); this.select();
+    } else if (this.keys.BACK.includes(keyCode) || isBack) {
+      e.preventDefault(); history.back();
+    }
+  },
+
+  move(direction) {
+    if (!this.currentFocus) { this.setInitialFocus(); return; }
+    const currentRect = this.currentFocus.getBoundingClientRect();
+    const cx = currentRect.left + currentRect.width / 2;
+    const cy = currentRect.top + currentRect.height / 2;
+
+    let candidates = this.focusableElements.filter(el => {
+      if (el === this.currentFocus) return false;
+      const r = el.getBoundingClientRect();
+      const ex = r.left + r.width / 2;
+      const ey = r.top + r.height / 2;
+      switch (direction) {
+        case 'up': return ey < cy - 10;
+        case 'down': return ey > cy + 10;
+        case 'left': return ex < cx - 10;
+        case 'right': return ex > cx + 10;
+      }
+      return false;
+    });
+
+    if (candidates.length === 0) return;
+
+    let best = null, bestScore = Infinity;
+    candidates.forEach(el => {
+      const r = el.getBoundingClientRect();
+      const ex = r.left + r.width / 2;
+      const ey = r.top + r.height / 2;
+      const dx = ex - cx;
+      const dy = ey - cy;
+      let score;
+      switch (direction) {
+        case 'up': case 'down': score = Math.abs(dy) * 2 + Math.abs(dx); break;
+        case 'left': case 'right': score = Math.abs(dx) * 2 + Math.abs(dy); break;
+      }
+      if (score < bestScore) { bestScore = score; best = el; }
+    });
+
+    if (best) this.focus(best);
+  },
+
+  select() {
+    if (!this.currentFocus) return;
+    const el = this.currentFocus;
+    el.classList.remove('tv-focus');
+    try { el.click(); } catch(e) {}
+    const evt = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
+    el.dispatchEvent(evt);
+    if (el.onclick) { try { el.onclick.call(el); } catch(e) {} }
+    setTimeout(() => { if (this.currentFocus === el && document.contains(el)) el.classList.add('tv-focus'); }, 150);
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  TVNav.init();
+});
+</script>
+</body>
+</html>
