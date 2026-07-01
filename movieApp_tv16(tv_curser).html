@@ -2599,7 +2599,39 @@ episode-item.tv-focus {
 
 <script>
 
-
+   // ===== AD BLOCK =====
+        (function() {
+            var adSelectors = [
+                'iframe[src*="ads"]', 'iframe[src*="doubleclick"]', 'iframe[src*="googlesyndication"]',
+                'div[class*="ad-"]', 'div[id*="ad-"]', 'div[class*="adsense"]', 'div[id*="adsense"]',
+                'div[class*="advertisement"]', 'div[id*="advertisement"]', 'div[class*="banner"]',
+                'ins.adsbygoogle', '.ad-container', '.ad-wrapper', '.sponsored',
+                '[data-ad-slot]', '[data-ad-client]', '[data-adblock-key]',
+                'script[src*="ads"]', 'script[src*="doubleclick"]', 'script[src*="googletagmanager"]',
+                'script[src*="google-analytics"]', 'script[src*="googlesyndication"]'
+            ];
+            function blockAds() {
+                for (var i = 0; i < adSelectors.length; i++) {
+                    var els = document.querySelectorAll(adSelectors[i]);
+                    for (var j = 0; j < els.length; j++) {
+                        var el = els[j];
+                        el.style.display = 'none';
+                        el.style.visibility = 'hidden';
+                        el.style.opacity = '0';
+                        el.style.height = '0';
+                        el.style.width = '0';
+                        el.style.pointerEvents = 'none';
+                        if (el.tagName === 'SCRIPT') {
+                            el.type = 'text/plain';
+                            el.removeAttribute('src');
+                        }
+                    }
+                }
+            }
+            blockAds();
+            var observer = new MutationObserver(blockAds);
+            observer.observe(document.documentElement, { childList: true, subtree: true });
+        })();
 
 const API_KEY = '1317be01caea4fe63d92be7e4dfb95b6';
 const BASE = 'https://api.themoviedb.org/3';
