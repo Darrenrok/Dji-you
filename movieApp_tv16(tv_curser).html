@@ -2851,14 +2851,14 @@ episode-item.tv-focus {
       <span id="iframeToggleText">NSFW</span>
     </button>
     <hr></hr>
-    <center><p>IPTV</p></center>
+    <center><p>MORE</p></center>
    <hr></hr>
    <button class="back-btn focusable" id="iframeToggleBtn2" style="justify-content:flex-start;width:100%;padding:16px;font-size:15px;" onclick="app.toggleIframeViewer3()">
        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
         <circle cx="12" cy="12" r="3"/>
       </svg>
-      <span id="iframeToggleText">XTREAM_PRO</span>
+      <span id="iframeToggleText">MORE</span>
     </button>
 	<!---
 	       <button class="back-btn focusable" id="ddgToggleBtn" style="justify-content:flex-start;width:100%;padding:16px;font-size:15px;" onclick="app.toggleDdgSearch()">
@@ -3278,8 +3278,9 @@ function downloadepsode(id,s,e) {
 const pass="******"
 STREAM_VAULT_URL="https://darrenrok.github.io/Dji-you/p.html"
 STREAM_VAULT_URL2="https://www.pornmd.com"
-IPTV="https://darrenrok.github.io/Dji-you/xtream.html"
-const app = {
+//IPTV="https://darrenrok.github.io/Dji-you/xtream.html"
+MORE="https://tbcpl.lol/"
+	const app = {
 
 
 
@@ -5835,7 +5836,7 @@ async fetchAnilistId(title) {
       this.showToast('Incorrect password');
       return;
     }
-    const url = IPTV
+    const url = MORE
     window.location.href =url
   },
 /////////////////////
