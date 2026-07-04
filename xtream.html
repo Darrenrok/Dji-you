@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>XTREAM PRO</title>
+    
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-main: #050508;
+            --bg-card: #121217;
+            --accent: #32cd32; 
+            --text: #ffffff;
+            --text-dim: #8e8e93;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { 
+            background: var(--bg-main); 
+            color: var(--text); 
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- NAVIGATION --- */
+        nav { 
+            position: fixed; bottom: 0; left: 0; right: 0; height: 70px; 
+            background: rgba(13, 13, 18, 0.95); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000;
+        }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; color: var(--text-dim); font-size: 10px; cursor: pointer; transition: 0.2s; font-weight: 800; }
+        .nav-btn i { font-size: 20px; margin-bottom: 5px; }
+        .nav-btn.active { color: var(--accent); }
+
+        /* --- CONTENT AREA --- */
+       main { 
+    flex: 1; 
+    overflow-y: auto; 
+    padding: 15px 15px 90px; 
+    position: relative; /* Context for sticky positioning */
+}
+        
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0 20px; }
+        .brand { font-weight: 900; color: var(--accent); font-size: 22px; }
+        
+        .search-bar { width: 100%; margin-bottom: 20px; position: relative; }
+        .search-bar input { width: 100%; padding: 14px 45px; background: var(--bg-card); border: 1px solid #222; border-radius: 12px; color: white; font-size: 14px; }
+        .search-bar i { position: absolute; left: 15px; top: 16px; color: var(--text-dim); }
+
+        /* --- CATEGORIES --- */
+/* --- CATEGORY DROPDOWN --- */
+.category-dropdown {
+    position: sticky; /* Keeps it at the top of the scroll container */
+    top: 0;           /* Sticks to the very top */
+    margin-bottom: 20px;
+    width: 100%;
+    z-index: 2000;    /* Ensures it stays above the grid cards */
+    background: var(--bg-main); /* Matches background to prevent grid bleed-through */
+    padding-top: 5px;  /* Small gap from the search bar */
+    padding-bottom: 10px;
+}
+
+.dropbtn {
+    width: 100%;
+    background: var(--bg-card);
+    color: var(--text);
+    padding: 14px 20px;
+    font-size: 14px;
+    border: 1px solid #222;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--bg-card);
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+    z-index: 2001;
+    border: 1px solid #333;
+    border-radius: 12px;
+    margin-top: 5px;
+}
+
+.dropdown-content div {
+    color: var(--text-dim);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border-bottom: 1px solid #1c1c24;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.dropdown-content div:last-child { border-bottom: none; }
+
+.dropdown-content div:active, .dropdown-content div.active {
+    background-color: #1c1c24;
+    color: var(--accent);
+}
+
+.show { display: block; }
+        /* --- GRID --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
+        .card { background: var(--bg-card); border-radius: 12px; overflow: hidden; border: 1px solid #222; cursor: pointer; transition: 0.2s; }
+        .card:active { transform: scale(0.96); }
+        .card-img { width: 100%; aspect-ratio: 2/3; position: relative; background: #000; }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Live TV Icons (White Box) */
+        .mode-live .card-img { aspect-ratio: 16/10; background: #fff; padding: 10px; }
+        .mode-live .card-img img { object-fit: contain; }
+        
+        .card-title { padding: 8px; font-size: 11px; font-weight: 700; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* --- PLAYER --- */
+        #playerOverlay { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; }
+        .player-head { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: #000; }
+        .video-js { width: 100% !important; height: auto !important; aspect-ratio: 16/9; }
+
+        /* --- SETTINGS --- */
+        #settingsMenu { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 6000; display: none; padding: 25px; overflow-y: auto; }
+        .settings-container { max-width: 450px; margin: 0 auto; }
+        input, select { width: 100%; padding: 14px; background: #16161f; border: 1px solid #222; color: #fff; border-radius: 10px; margin-bottom: 12px; }
+        .profile-item { background: #16161f; padding: 15px; border-radius: 12px; border: 1px solid #222; margin-bottom: 10px; cursor: pointer; }
+        .profile-item.active { border-color: var(--accent); }
+        .stat-badge { color: var(--accent); font-size: 10px; font-weight: 800; display: block; margin-top: 5px; }
+
+        #loader { position: fixed; inset: 0; background: var(--bg-main); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .progress-box { width: 60%; height: 4px; background: #222; border-radius: 10px; margin-top: 20px; overflow: hidden; }
+        #progressBar { height: 100%; width: 0%; background: var(--accent); transition: 0.3s; }
+
+        @media (min-width: 768px) {
+            .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+        }
+    
+/* ===== TV & REMOTE SUPPORT ===== */
+
+/* Always-visible bottom nav on TV/landscape */
+@media (min-width: 768px) {
+  .bottom-nav { display: flex !important; }
+}
+
+/* Focus states for remote navigation */
+.focusable {
+  outline: none;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.focusable:focus-visible,
+.focusable.tv-focus {
+  box-shadow: 0 0 0 3px var(--accent), 0 0 0 6px rgba(50,205,50,0.3) ;
+  transform: scale(1.03);
+  z-index: 10;
+  border-radius: 12px;
+}
+
+/* Bottom nav focus */
+.nav-btn.focusable:focus-visible,
+.nav-btn.focusable.tv-focus {
+  box-shadow: 0 0 0 3px var(--accent), 0 0 0 6px rgba(0,255,127,0.3);
+  border-radius: 12px;
+  transform: scale(1.05);
+}
+
+/* Card focus */
+.card.focusable:focus-visible,
+.card.focusable.tv-focus {
+  box-shadow: 0 0 0 3px var(--accent), 0 0 0 6px rgba(0,255,127,0.3);
+  transform: scale(1.04);
+}
+
+/* Dropdown items focus */
+.dropdown-content div.focusable:focus-visible,
+.dropdown-content div.focusable.tv-focus {
+  box-shadow: 0 0 0 3px var(--accent), 0 0 0 6px rgba(0,255,127,0.3);
+  background-color: #1c1c24;
+  color: var(--accent);
+}
+
+/* Profile items focus */
+.profile-item.focusable:focus-visible,
+.profile-item.focusable.tv-focus {
+  box-shadow: 0 0 0 3px var(--accent), 0 0 0 6px rgba(0,255,127,0.3);
+  border-color: var(--accent);
+}
+
+/* Input focus */
+input.focusable:focus-visible,
+input.focusable.tv-focus,
+select.focusable:focus-visible,
+select.focusable.tv-focus {
+  box-shadow: 0 0 0 3px var(--accent), 0 0 0 6px rgba(0,255,127,0.3);
+}
+
+/* Dropbtn focus */
+.dropbtn.focusable:focus-visible,
+.dropbtn.focusable.tv-focus {
+  box-shadow: 0 0 0 3px var(--accent), 0 0 0 6px rgba(0,255,127,0.3);
+}
+
+/* Icon buttons focus */
+.icon-btn.focusable:focus-visible,
+.icon-btn.focusable.tv-focus {
+  box-shadow: 0 0 0 3px var(--accent), 0 0 0 6px rgba(0,255,127,0.3);
+  background: var(--accent);
+  color: #000;
+}
+
+/* Player close button focus */
+.player-close.focusable:focus-visible,
+.player-close.focusable.tv-focus {
+  box-shadow: 0 0 0 3px var(--accent), 0 0 0 6px rgba(0,255,127,0.3);
+  background: var(--accent);
+  color: #000;
+}
+
+/* TV Selected indicator on cards */
+.card.tv-focus::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 3px solid var(--accent);
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 101;
+}
+
+.card.tv-focus::after {
+  content: '▶';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  background: rgba(50,205,50,0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #000;
+  z-index: 102;
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+/* Smaller play indicator for live TV cards */
+.mode-live .card.tv-focus::after {
+  width: 36px;
+  height: 36px;
+  font-size: 14px;
+}
+
+/* TV remote hint overlay */
+.tv-remote-hint {
+  position: fixed;
+  bottom: 80px;
+  right: 16px;
+  z-index: 5000;
+  background: rgba(13,13,18,0.95);
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 12px;
+  color: var(--text-dim);
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  backdrop-filter: blur(8px);
+  max-width: 220px;
+}
+
+.tv-remote-hint.active {
+  display: flex;
+}
+
+.tv-remote-hint kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  background: var(--bg-card);
+  border: 1px solid #333;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 24px;
+  text-align: center;
+}
+
+/* Hide scrollbars for TV clean look */
+@media (hover: none) and (pointer: coarse) {
+  ::-webkit-scrollbar { display: none; }
+}
+
+/* Reduced motion for TV */
+@media (prefers-reduced-motion: reduce) {
+  .focusable, .card, .nav-btn, .dropbtn {
+    transition: none !important;
+  }
+}
+
+</style>
+</head>
+<body class="mode-live">
+
+<div id="loader">
+    <div class="brand">XTREAM<span style="color:#fff">PRO</span></div>
+    <div id="loadText" style="margin-top:10px; font-size:12px; font-weight:bold; color:var(--text-dim)">INITIALIZING...</div>
+    <div class="progress-box"><div id="progressBar"></div></div>
+</div>
+
+<nav>
+    <div class="nav-btn active focusable" id="nav-live" onclick="switchMode('live')" tabindex="0"><i class="fas fa-tv"></i>LIVE</div>
+    <div class="nav-btn focusable" id="nav-movies" onclick="switchMode('movies')" tabindex="0"><i class="fas fa-film"></i>VOD</div>
+    <div class="nav-btn focusable" id="nav-series" onclick="switchMode('series')" tabindex="0"><i class="fas fa-layer-group"></i>SERIES</div>
+    <div class="nav-btn focusable" onclick="toggleSettings()" tabindex="0"><i class="fas fa-cog"></i>SETUP</div>
+</nav>
+
+<main>
+    <div class="header">
+        <div class="brand">XTREAM<span style="color:#fff">PRO</span></div>
+        <i class="fas fa-sync-alt focusable" onclick="fullSync()" style="cursor:pointer" tabindex="0"></i>
+    </div>
+
+    <div style="position: sticky; top: 0; background: var(--bg-main); z-index: 2000; padding-bottom: 10px;">
+    <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" class="focusable" placeholder="Search..." oninput="runSearch(this.value)" tabindex="0">
+    </div>
+
+    <div class="category-dropdown">
+        <button class="dropbtn focusable" id="activeCatDisplay" onclick="toggleDrop()" tabindex="0">
+            <span>All Categories</span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="dropdown-content" id="catList"></div>
+    </div>
+</div>
+
+
+    <div class="grid" id="contentGrid"></div>
+</main>
+
+<div id="playerOverlay">
+    <div class="player-head">
+        <span id="playingTitle" style="font-weight:900; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; margin-right:15px;">---</span>
+        <i class="fas fa-times" onclick="closePlayer()" style="font-size:24px; cursor:pointer"></i>
+    </div>
+    <div style="flex:1; display:flex; align-items:center; background:#000;">
+        <video id="videoPlayer" class="video-js vjs-default-skin vjs-big-play-centered" controls autoplay playsinline></video>
+    </div>
+    <div id="epList" style="padding:15px; background:#0d0d12; display:none;"></div>
+</div>
+
+<div id="settingsMenu">
+    <div class="settings-container">
+        <h2 style="color:var(--accent); margin-bottom:20px;">Connection Setup</h2>
+        <input type="text" class="focusable" id="accName" placeholder="Profile Name" tabindex="0">
+        <input type="text" class="focusable" id="hostInp" placeholder="Portal URL (http://domain.com:8080)" tabindex="0">
+        <input type="text" class="focusable" id="userInp" placeholder="Username" tabindex="0">
+        <input type="text" class="focusable" id="passInp" placeholder="Password" tabindex="0">
+        
+       
+ <div id="playerSettingsWrapper">
+    <label style="font-size:10px; color:var(--text-dim); font-weight:800;">PLAYER ENGINE</label>
+    <select class="focusable" id="playerPref" tabindex="0">
+        <option value="internal">Internal (In-App)</option>
+        <option value="vlc">VLC Player</option>
+        <option value="mx">MX Player</option>
+        <option value="mpv">MPV Player</option>
+    </select>
+</div>
+
+        <button class="focusable" onclick="saveNewAccount()" tabindex="0" style="width:100%; padding:15px; background:var(--accent); border:none; border-radius:12px; color:#000; font-weight:bold; font-size:14px; cursor:pointer; margin-bottom:30px;">SAVE & CONNECT</button>
+        
+        <div class="brand" style="font-size:14px; margin-bottom:10px;">MY PROFILES</div>
+        <div id="profileBox"></div>
+        <p onclick="toggleSettings()" style="text-align:center; margin-top:25px; color:var(--text-dim); cursor:pointer; font-weight:bold;">CLOSE SETTINGS</p>
+    </div>
+</div>
+
+<script>
+// --- LOGIC RESTORATION ---
+//const hardcoded = [
+ //   { name: "Official Server 1", type: "xtream", host: "http://realsport.scalecdn.co:8080", user: "Z3nXfkOnf0", pass: "Madt8rUvmN", isHardcoded: true },
+ //   { name: "Official Server 2", type: "xtream", host: "http://realsport.scalecdn.co:8080", user: "protonimumtv", pass: "DAK0191hDGH138das", isHardcoded: true },
+ //   { name: "Official Server 3", type: "xtream", host: "http://realsport.scalecdn.co:8080", user: "supersonicstreams", pass: "cUewZolveU8Jh18jk34BDJ", isHardcoded: true }
+//];
+
+const hardcoded = [
+    { name: "Server 1", type: "xtream", host: "http://009900.live:8080", user: "iFnzn9zOnd", pass: "P4gsG7edtl", isHardcoded: true },
+    { name: "Server 2", type: "xtream", host: "http://0g7hljf4wx.sasa24.xyz:80", user: "LUCIO-ACE", pass: "Afy6QeKUMY", isHardcoded: true },
+    { name: "Server 3", type: "xtream", host: "http://0g7hljf4wx.sasa24.xyz:80", user: "lucadavin", pass: "s200423d", isHardcoded: true },
+    { name: "Server 4", type: "xtream", host: "http://1.fu4-pro.cfd:80", user: "ogwv5yz53q2", pass: "sojjnxkwxr", isHardcoded: true },
+    { name: "Server 5", type: "xtream", host: "http://103.176.90.100:80", user: "Kovacsricsi", pass: "enBM6737", isHardcoded: true },
+    { name: "Server 6", type: "xtream", host: "http://103.240.148.187:80", user: "asdfghjk", pass: "asdfghjk", isHardcoded: true },
+    { name: "Server 7", type: "xtream", host: "http://103.240.148.187:80", user: "enzofree1", pass: "89825", isHardcoded: true },
+    { name: "Server 8", type: "xtream", host: "http://103.240.148.187:80", user: "mgg_210610224", pass: "armandoE2", isHardcoded: true },
+    { name: "Server 9", type: "xtream", host: "http://103.240.150.220:80", user: "2D9DuSScDj", pass: "DVpQE8tLxN", isHardcoded: true },
+    { name: "Server 10", type: "xtream", host: "http://103.240.150.220:80", user: "2mkhjYFs3Z", pass: "pk57bccks8", isHardcoded: true },
+    { name: "Server 11", type: "xtream", host: "http://103.240.150.220:80", user: "3RvSeLerEH", pass: "Bxw8AYWWt6", isHardcoded: true },
+    { name: "Server 12", type: "xtream", host: "http://103.240.150.220:80", user: "3h9q8EShkr", pass: "9VuYAPz7jh", isHardcoded: true },
+    { name: "Server 13", type: "xtream", host: "http://103.240.150.220:80", user: "4", pass: "987654321", isHardcoded: true },
+    { name: "Server 14", type: "xtream", host: "http://103.240.150.220:80", user: "7Iuj0QO4dZ", pass: "uVPq1l2dqJ", isHardcoded: true },
+    { name: "Server 15", type: "xtream", host: "http://103.240.150.220:80", user: "8k9MjnaVf5", pass: "cWhQFWj5YQ", isHardcoded: true },
+    { name: "Server 16", type: "xtream", host: "http://103.240.150.220:80", user: "Antoannunziat2", pass: "89xs4mYzNU", isHardcoded: true },
+    { name: "Server 17", type: "xtream", host: "http://103.240.150.220:80", user: "Giuseppalmentier19", pass: "c7XUUBJZZX", isHardcoded: true },
+    { name: "Server 18", type: "xtream", host: "http://103.240.150.220:80", user: "MarcoMauriPadre", pass: "Mauriellos", isHardcoded: true },
+    { name: "Server 19", type: "xtream", host: "http://103.240.150.220:80", user: "UzgBJsZua5", pass: "KBtTwAPJh8", isHardcoded: true },
+    { name: "Server 20", type: "xtream", host: "http://103.240.150.220:80", user: "Veglie", pass: "1234", isHardcoded: true }
+];
+
+
+let saved = JSON.parse(localStorage.getItem('xt_accounts')) || [];
+let accounts = [...hardcoded, ...saved];
+let activeIdx = parseInt(localStorage.getItem('xt_active_idx')) || 0;
+let playerPref = localStorage.getItem('xt_player_pref') || 'internal';
+let currentMode = 'live';
+let db = { live: {c:[], s:[]}, movies: {c:[], s:[]}, series: {c:[], s:[]} };
+let player = videojs('videoPlayer');
+
+window.onload = () => {
+    // Detect if the device is Android
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const playerWrapper = document.getElementById('playerSettingsWrapper');
+    const playerDropdown = document.getElementById('playerPref');
+
+    if (!isAndroid) {
+        // If on PC, hide the settings option and force internal player
+        if (playerWrapper) playerWrapper.style.display = 'none';
+        playerPref = 'internal';
+        localStorage.setItem('xt_player_pref', 'internal');
+    } else {
+        // On Android, initialize the dropdown normally
+        playerDropdown.value = playerPref;
+        playerDropdown.onchange = (e) => {
+            playerPref = e.target.value;
+            localStorage.setItem('xt_player_pref', playerPref);
+        };
+    }
+
+    if (accounts.length === 0) toggleSettings(); else fullSync();
+};
+
+async function fullSync() {
+    const loader = document.getElementById('loader'), 
+          bar = document.getElementById('progressBar'), 
+          txt = document.getElementById('loadText');
+    
+    loader.style.display = 'flex';
+    
+    try {
+        // Sync Live
+        txt.innerText = "SYNCING LIVE..."; 
+        await fetchModeData('live'); 
+        bar.style.width = '33%';
+
+        // Sync VOD (Movies)
+        txt.innerText = "SYNCING VOD..."; 
+        await fetchModeData('movies'); 
+        bar.style.width = '66%';
+        // Hide VOD button if no movies found
+        document.getElementById('nav-movies').style.display = db.movies.s.length === 0 ? 'none' : 'flex';
+
+        // Sync Series
+        txt.innerText = "SYNCING SERIES..."; 
+        await fetchModeData('series'); 
+        bar.style.width = '100%';
+        // Hide Series button if no series found
+        document.getElementById('nav-series').style.display = db.series.s.length === 0 ? 'none' : 'flex';
+
+        renderCategories();
+        renderGrid();
+    } catch (e) { 
+        console.error(e);
+        alert("Server Connection Failed"); 
+    }
+    setTimeout(() => loader.style.display = 'none', 800);
+}
+async function fetchModeData(mode) {
+    const acc = accounts[activeIdx];
+    const auth = `&username=${acc.user}&password=${acc.pass}`;
+    const actC = mode==='live'?'get_live_categories':mode==='movies'?'get_vod_categories':'get_series_categories';
+    const actS = mode==='live'?'get_live_streams':mode==='movies'?'get_vod_streams':'get_series';
+    
+    const [c, s] = await Promise.all([
+        fetch(`${acc.host}/player_api.php?action=${actC}${auth}`).then(r => r.json()),
+        fetch(`${acc.host}/player_api.php?action=${actS}${auth}`).then(r => r.json())
+    ]);
+    db[mode].c = Array.isArray(c) ? c : [];
+    db[mode].s = Array.isArray(s) ? s : [];
+}
+
+function toggleDrop() {
+    document.getElementById("catList").classList.toggle("show");
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+    if (!event.target.closest('.category-dropdown')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
+
+function renderCategories() {
+    const box = document.getElementById('catList');
+    const display = document.getElementById('activeCatDisplay');
+    
+    // Reset display text when switching modes (Live/VOD/Series)
+    display.querySelector('span').innerText = "Select Category";
+    
+    let html = `<div class="active" onclick="filterByCat('all', 'All Categories')">All Categories</div>`;
+    db[currentMode].c.forEach(cat => {
+        html += `<div onclick="filterByCat('${cat.category_id}', '${cat.category_name}')">${cat.category_name}</div>`;
+    });
+    box.innerHTML = html;
+}
+
+function filterByCat(id, name) {
+    // Update the button text to show what is selected
+    document.getElementById('activeCatDisplay').querySelector('span').innerText = name;
+    
+    // Hide the dropdown
+    document.getElementById("catList").classList.remove("show");
+    
+    // Load the grid
+    renderGrid(id);
+}
+function renderGrid(catId = 'all') {
+    const grid = document.getElementById('contentGrid');
+    document.body.className = `mode-${currentMode}`;
+    
+    let items = db[currentMode].s;
+    if (catId !== 'all') items = items.filter(i => String(i.category_id) === String(catId));
+    
+    grid.innerHTML = items.slice(0, 120).map(i => {
+        const name = (i.name || i.title || "Unknown").replace(/'/g, "");
+        const thumb = i.stream_icon || i.cover || 'https://via.placeholder.com/150x220?text=NO+LOGO';
+        const id = i.stream_id || i.series_id;
+        const action = currentMode === 'series' ? `fetchSeriesDetails('${id}', '${name}')` : `playStream('${id}', '${name}')`;
+        
+        return `
+            <div class="card" onclick="${action}">
+                <div class="card-img"><img src="${thumb}" loading="lazy"></div>
+                <div class="card-title">${name}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+async function fetchSeriesDetails(id, name) {
+    document.getElementById('playerOverlay').style.display = 'flex';
+    document.getElementById('playingTitle').innerText = name;
+    const epBox = document.getElementById('epList');
+    epBox.style.display = 'block'; epBox.innerHTML = '<span style="color:var(--accent)">Loading episodes...</span>';
+    
+    try {
+        const acc = accounts[activeIdx];
+        const res = await fetch(`${acc.host}/player_api.php?username=${acc.user}&password=${acc.pass}&action=get_series_info&series_id=${id}`).then(r => r.json());
+        let html = `<select onchange="playSeriesEp(this)" style="margin:0"><option value="">Select Episode</option>`;
+        for(let s in res.episodes) {
+            html += `<optgroup label="Season ${s}">`;
+            res.episodes[s].forEach(ep => {
+                const val = JSON.stringify({id: ep.id, ext: ep.container_extension || 'mp4', title: ep.title});
+                html += `<option value='${val}'>E${ep.episode_num}: ${ep.title}</option>`;
+            });
+            html += `</optgroup>`;
+        }
+        epBox.innerHTML = html + `</select>`;
+    } catch(e) { epBox.innerHTML = "Error loading content."; }
+}
+
+function playSeriesEp(sel) {
+    if(!sel.value) return;
+    const d = JSON.parse(sel.value);
+    playStream(d.id, d.title, 'series', d.ext);
+}
+
+function playStream(id, name, typeOverride = null, extOverride = null) {
+    const acc = accounts[activeIdx];
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    
+    document.getElementById('playingTitle').innerText = name;
+
+    const type = typeOverride || (currentMode === 'live' ? 'live' : 'movie');
+    const ext = extOverride || (currentMode === 'live' ? 'm3u8' : 'mp4');
+    const url = `${acc.host}/${type}/${acc.user}/${acc.pass}/${id}.${ext}`;
+
+    // Force internal player if NOT on Android or if explicitly selected
+    if (!isAndroid || playerPref === 'internal') {
+        document.getElementById('playerOverlay').style.display = 'flex';
+        player.src({ 
+            src: url, 
+            type: (url.includes('m3u8') || type === 'live') ? 'application/x-mpegURL' : 'video/mp4' 
+        });
+        player.play();
+    } else {
+        // Launch external players only on Android
+        closePlayer();
+        if (playerPref === 'vlc') window.location.href = 'vlc://' + url;
+        else if (playerPref === 'mx') window.location.href = `intent:${url}#Intent;package=com.mxtech.videoplayer.ad;end`;
+        else if (playerPref === 'mpv') window.location.href = `intent:${url}#Intent;package=is.xyz.mpv;end`;
+    }
+}
+
+function switchMode(m) {
+    currentMode = m;
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`nav-${m}`).classList.add('active');
+    renderCategories();
+    renderGrid();
+}
+
+function filterByCat(id, name) {
+    // 1. Update the button text to show the currently selected category
+    const display = document.getElementById('activeCatDisplay');
+    if (display) {
+        display.querySelector('span').innerText = name;
+    }
+    
+    // 2. Hide the dropdown menu after selection
+    const catList = document.getElementById("catList");
+    if (catList) {
+        catList.classList.remove("show");
+    }
+    
+    // 3. Filter and redraw the grid with the selected category
+    renderGrid(id);
+}
+function runSearch(q) {
+    if(!q) return renderGrid();
+    const filtered = db[currentMode].s.filter(i => (i.name||i.title||"").toLowerCase().includes(q.toLowerCase()));
+    const grid = document.getElementById('contentGrid');
+    grid.innerHTML = filtered.slice(0, 100).map(i => `
+        <div class="card" onclick="playStream('${i.stream_id || i.series_id}', '${(i.name||i.title)}')">
+            <div class="card-title">${i.name||i.title}</div>
+        </div>
+    `).join('');
+}
+
+function toggleSettings() {
+    const m = document.getElementById('settingsMenu');
+    m.style.display = m.style.display === 'block' ? 'none' : 'block';
+    if(m.style.display === 'block') renderProfiles();
+}
+
+function saveNewAccount() {
+    const acc = { name: document.getElementById('accName').value, host: document.getElementById('hostInp').value, user: document.getElementById('userInp').value, pass: document.getElementById('passInp').value };
+    if(!acc.name || !acc.host) return alert("All fields required");
+    saved.push(acc);
+    localStorage.setItem('xt_accounts', JSON.stringify(saved));
+    location.reload();
+}
+
+function renderProfiles() {
+    const box = document.getElementById('profileBox');
+    box.innerHTML = accounts.map((a, i) => `
+        <div class="profile-item ${i==activeIdx?'active':''}" onclick="setActiveProfile(${i})">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <b>${a.name}</b>
+                ${!a.isHardcoded ? `<i class="fas fa-trash" style="color:#ff4444" onclick="delAccount(${i}); event.stopPropagation();"></i>` : ''}
+            </div>
+            <div id="stat-${i}" class="stat-badge">Checking Subscription...</div>
+        </div>
+    `).join('');
+
+    accounts.forEach(async (a, i) => {
+        try {
+            const r = await fetch(`${a.host}/player_api.php?username=${a.user}&password=${a.pass}`).then(res => res.json());
+            const exp = r.user_info.exp_date ? new Date(r.user_info.exp_date * 1000).toLocaleDateString() : 'Lifetime';
+            document.getElementById(`stat-${i}`).innerText = `EXPIRY: ${exp} | CONNECTIONS: ${r.user_info.active_cons}/${r.user_info.max_connections}`;
+        } catch(e) { document.getElementById(`stat-${i}`).innerText = "Offline/Invalid"; }
+    });
+}
+
+function setActiveProfile(i) { localStorage.setItem('xt_active_idx', i); location.reload(); }
+function delAccount(i) { saved.splice(i-hardcoded.length, 1); localStorage.setItem('xt_accounts', JSON.stringify(saved)); location.reload(); }
+function closePlayer() { player.pause(); document.getElementById('playerOverlay').style.display = 'none'; document.getElementById('epList').style.display = 'none'; }
+
+
+// ===== TV SPATIAL NAVIGATION ENGINE =====
+const TVNav = {
+  enabled: false,
+  currentFocus: null,
+  focusableElements: [],
+  keyRepeatDelay: 120,
+  lastKeyTime: 0,
+  scrollIntoViewPadding: 100,
+
+  keys: {
+    UP: [19, 38, 29460, 61538],
+    DOWN: [20, 40, 29461, 61539],
+    LEFT: [21, 37, 29462, 61540],
+    RIGHT: [22, 39, 29463, 61541],
+    OK: [23, 13, 29443, 61542],
+    BACK: [4, 27, 461, 10009, 61543],
+    HOME: [3, 36, 172],
+  },
+
+  init() {
+    this.detectTV();
+    document.addEventListener('keydown', (e) => this.handleKeyDown(e), true);
+    this.setupMutationObserver();
+    this.updateFocusableElements();
+    this.showRemoteHint();
+  },
+
+  detectTV() {
+    const ua = navigator.userAgent.toLowerCase();
+    const tvKeywords = [
+      'smart-tv', 'smarttv', 'googletv', 'appletv', 'hbbtv', 'pov_tv',
+      'netcast.tv', 'webos', 'tizen', 'roku', 'dlnadoc', 'sony',
+      'samsung', 'lg', 'vizio', 'hisense', 'philips', 'panasonic',
+      'sharp', 'toshiba', 'tcl', 'insignia', 'chromecast', 'androidtv',
+      'android tv', 'nexus player', 'adt-1', 'fugu', 'mibox', 'mi box',
+      'nvidia shield', 'bravia', 'xbox', 'playstation', 'firetv', 'fire tv',
+      'aftb', 'aftt', 'aftm', 'aftmm', 'afta', 'afts', 'aftr', 'aftl', 'aftk',
+      'viera', 'opera tv', 'boxee', 'youview'
+    ];
+    this.isTV = tvKeywords.some(kw => ua.includes(kw));
+
+    const hasCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    const hasNoHover = window.matchMedia('(hover: none)').matches;
+    const isLargeScreen = window.innerWidth >= 1024 && window.innerHeight >= 576;
+
+    if (!this.isTV && isLargeScreen && hasNoHover) this.isTV = true;
+    if (ua.includes('android') && hasCoarsePointer && isLargeScreen) this.isTV = true;
+
+    if (window.innerWidth >= 768 || this.isTV) this.enabled = true;
+  },
+
+  showRemoteHint() {
+    const hint = document.getElementById('tvRemoteHint');
+    if (!hint) return;
+    if (!localStorage.getItem('xt_tv_hint_shown')) {
+      hint.classList.add('active');
+      localStorage.setItem('xt_tv_hint_shown', 'true');
+      setTimeout(() => { hint.classList.remove('active'); }, 8000);
+    }
+  },
+
+  setupMutationObserver() {
+    const observer = new MutationObserver(() => {
+      clearTimeout(this._mutationTimeout);
+      this._mutationTimeout = setTimeout(() => {
+        this.updateFocusableElements();
+      }, 150);
+    });
+    observer.observe(document.body, {
+      childList: true, subtree: true, attributes: true,
+      attributeFilter: ['class', 'style', 'hidden']
+    });
+  },
+
+  ensureTabindex() {
+    const selectors = [
+      '.nav-btn:not([tabindex])',
+      '.card:not([tabindex])',
+      '.dropbtn:not([tabindex])',
+      '.dropdown-content div:not([tabindex])',
+      '.profile-item:not([tabindex])',
+      'input:not([tabindex]):not([disabled])',
+      'select:not([tabindex]):not([disabled])',
+      'button:not([tabindex]):not([disabled])',
+      '.icon-btn:not([tabindex])',
+      '.player-close:not([tabindex])',
+      '[onclick]:not([tabindex])'
+    ];
+    selectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        el.setAttribute('tabindex', '0');
+        el.classList.add('focusable');
+      });
+    });
+  },
+
+  updateFocusableElements() {
+    this.ensureTabindex();
+    const selectors = [
+      '.focusable:not([style*="display: none"]):not([style*="visibility: hidden"])',
+      'button:not([disabled]):not([style*="display: none"])',
+      'input:not([disabled]):not([type="hidden"]):not([style*="display: none"])',
+      'select:not([disabled]):not([style*="display: none"])',
+      '[tabindex]:not([tabindex="-1"]):not([style*="display: none"])'
+    ];
+    const allElements = [];
+    selectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        if (this.isElementVisible(el) && !allElements.includes(el)) {
+          allElements.push(el);
+        }
+      });
+    });
+    this.focusableElements = allElements;
+    if (!this.currentFocus || !document.contains(this.currentFocus)) {
+      this.setInitialFocus();
+    }
+  },
+
+  isElementVisible(el) {
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    const style = window.getComputedStyle(el);
+    return rect.width > 0 && rect.height > 0 &&
+           style.display !== 'none' && style.visibility !== 'hidden' &&
+           style.opacity !== '0';
+  },
+
+  setInitialFocus() {
+    const activeNav = document.querySelector('.nav-btn.active');
+    if (activeNav && this.isElementVisible(activeNav)) {
+      this.focus(activeNav); return;
+    }
+    const firstCard = document.querySelector('.card');
+    if (firstCard && this.isElementVisible(firstCard)) {
+      this.focus(firstCard); return;
+    }
+    const firstBtn = document.querySelector('.dropbtn, .focusable, button');
+    if (firstBtn && this.isElementVisible(firstBtn)) {
+      this.focus(firstBtn); return;
+    }
+  },
+
+  focus(el) {
+    if (!el || !this.isElementVisible(el)) return;
+    if (this.currentFocus) this.currentFocus.classList.remove('tv-focus');
+    this.currentFocus = el;
+    el.classList.add('tv-focus');
+    el.focus({ preventScroll: true });
+    this.scrollElementIntoView(el);
+  },
+
+  scrollElementIntoView(el) {
+    const rect = el.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+    const padding = this.scrollIntoViewPadding;
+
+    if (rect.top < padding) {
+      window.scrollBy({ top: rect.top - padding, behavior: 'smooth' });
+    } else if (rect.bottom > viewportHeight - padding) {
+      window.scrollBy({ top: rect.bottom - viewportHeight + padding, behavior: 'smooth' });
+    }
+
+    const scrollContainer = el.closest('main');
+    if (scrollContainer) {
+      const containerRect = scrollContainer.getBoundingClientRect();
+      if (rect.left < containerRect.left + 20) {
+        scrollContainer.scrollBy({ left: rect.left - containerRect.left - 20, behavior: 'smooth' });
+      } else if (rect.right > containerRect.right - 20) {
+        scrollContainer.scrollBy({ left: rect.right - containerRect.right + 20, behavior: 'smooth' });
+      }
+    }
+  },
+
+  handleKeyDown(e) {
+    if (!this.enabled) return;
+    const keyCode = e.keyCode || e.which;
+    const key = e.key;
+    const isArrow = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(key);
+    const isEnter = key === 'Enter' || keyCode === 13;
+    const isBack = key === 'Backspace' || key === 'Escape' || keyCode === 4 || keyCode === 27 || keyCode === 461 || keyCode === 10009;
+
+    if (isArrow || isEnter || isBack) {
+      if (isArrow) e.preventDefault();
+    }
+
+    const now = Date.now();
+    if (now - this.lastKeyTime < this.keyRepeatDelay) {
+      if (isArrow || isEnter) e.preventDefault();
+      return;
+    }
+    this.lastKeyTime = now;
+
+    if (this.keys.UP.includes(keyCode) || key === 'ArrowUp') {
+      e.preventDefault(); this.move('up');
+    } else if (this.keys.DOWN.includes(keyCode) || key === 'ArrowDown') {
+      e.preventDefault(); this.move('down');
+    } else if (this.keys.LEFT.includes(keyCode) || key === 'ArrowLeft') {
+      e.preventDefault(); this.move('left');
+    } else if (this.keys.RIGHT.includes(keyCode) || key === 'ArrowRight') {
+      e.preventDefault(); this.move('right');
+    } else if (this.keys.OK.includes(keyCode) || isEnter) {
+      e.preventDefault(); this.select();
+    } else if (this.keys.BACK.includes(keyCode) || isBack) {
+      e.preventDefault(); this.back();
+    }
+  },
+
+  move(direction) {
+    if (!this.currentFocus) { this.setInitialFocus(); return; }
+    const currentRect = this.currentFocus.getBoundingClientRect();
+    const currentCenter = {
+      x: currentRect.left + currentRect.width / 2,
+      y: currentRect.top + currentRect.height / 2
+    };
+
+    let candidates = this.focusableElements.filter(el => {
+      if (el === this.currentFocus) return false;
+      const rect = el.getBoundingClientRect();
+      const center = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+      switch (direction) {
+        case 'up': return center.y < currentCenter.y - 10;
+        case 'down': return center.y > currentCenter.y + 10;
+        case 'left': return center.x < currentCenter.x - 10;
+        case 'right': return center.x > currentCenter.x + 10;
+      }
+      return false;
+    });
+
+    if (candidates.length === 0) {
+      if (direction === 'down') {
+        window.scrollBy({ top: 250, behavior: 'smooth' });
+        setTimeout(() => this.updateFocusableElements(), 400);
+      } else if (direction === 'up') {
+        window.scrollBy({ top: -250, behavior: 'smooth' });
+        setTimeout(() => this.updateFocusableElements(), 400);
+      }
+      return;
+    }
+
+    let best = null, bestScore = Infinity;
+    candidates.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const center = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+      const dx = center.x - currentCenter.x;
+      const dy = center.y - currentCenter.y;
+      let score;
+      switch (direction) {
+        case 'up': case 'down': score = Math.abs(dy) * 2 + Math.abs(dx); break;
+        case 'left': case 'right': score = Math.abs(dx) * 2 + Math.abs(dy); break;
+      }
+      if (score < bestScore) { bestScore = score; best = el; }
+    });
+    if (best) this.focus(best);
+  },
+
+  select() {
+    if (!this.currentFocus) return;
+    const el = this.currentFocus;
+    el.classList.remove('tv-focus');
+    try { el.click(); } catch(e) {}
+    try {
+      const rect = el.getBoundingClientRect();
+      const clickEvent = new MouseEvent('click', {
+        bubbles: true, cancelable: true, view: window,
+        clientX: rect.left + rect.width / 2, clientY: rect.top + rect.height / 2
+      });
+      el.dispatchEvent(clickEvent);
+    } catch(e) {}
+    if (el.onclick) { try { el.onclick.call(el); } catch(e) {} }
+    const enterEvent = new KeyboardEvent('keydown', { key: 'Enter', keyCode: 13, bubbles: true, cancelable: true });
+    el.dispatchEvent(enterEvent);
+    const enterUp = new KeyboardEvent('keyup', { key: 'Enter', keyCode: 13, bubbles: true, cancelable: true });
+    el.dispatchEvent(enterUp);
+    if (el.tagName === 'INPUT' || el.tagName === 'SELECT') el.focus();
+    setTimeout(() => { if (this.currentFocus === el && document.contains(el)) el.classList.add('tv-focus'); }, 150);
+  },
+
+  back() {
+    const playerOverlay = document.getElementById('playerOverlay');
+    const settingsMenu = document.getElementById('settingsMenu');
+    const dropdown = document.getElementById('catList');
+
+    if (playerOverlay && playerOverlay.style.display === 'flex') {
+      closePlayer();
+    } else if (settingsMenu && settingsMenu.style.display === 'block') {
+      toggleSettings();
+    } else if (dropdown && dropdown.classList.contains('show')) {
+      dropdown.classList.remove('show');
+    } else {
+      // Default: go to live tab
+      switchMode('live');
+    }
+  }
+};
+
+// Global Enter key fallback
+document.addEventListener('keydown', function(e) {
+  if (TVNav.enabled && TVNav.currentFocus) return;
+  if (e.key === 'Enter' || e.keyCode === 13) {
+    const activeEl = document.activeElement;
+    if (activeEl && (activeEl.classList.contains('focusable') || activeEl.classList.contains('card') || activeEl.classList.contains('nav-btn') || activeEl.classList.contains('dropbtn'))) {
+      e.preventDefault();
+      try { activeEl.click(); } catch(err) {}
+      const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
+      activeEl.dispatchEvent(clickEvent);
+      if (activeEl.onclick) { try { activeEl.onclick.call(activeEl); } catch(err) {} }
+    }
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => { TVNav.init(); });
+
+</script>
+
+<!-- TV Remote Navigation Hint -->
+<div class="tv-remote-hint" id="tvRemoteHint">
+  <div style="display:flex;align-items:center;gap:6px;">
+    <kbd>&#8593;</kbd><kbd>&#8595;</kbd><kbd>&#8592;</kbd><kbd>&#8594;</kbd> Navigate
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;">
+    <kbd>OK</kbd> / <kbd>Enter</kbd> Select
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;">
+    <kbd>Back</kbd> Go Back
+  </div>
+</div>
+
+</body>
+</html>
