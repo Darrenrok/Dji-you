@@ -5545,6 +5545,27 @@ rows.forEach((r, i) => {
 		category: 'tv'
       },
 	  ///anime
+		{
+	    name: 'vyla (dub)',
+        url: `http://player.vyla.cc/?id=${this.currentDetail?.id}&season=${season}&epsode=${episode}`,
+        type: 'iframe',
+		category: 'anime'
+      },
+			{
+        name: 'vidlink (dub)',
+        url: this.buildVidLinkUrl(
+          `https://vidlink.pro/tv/${this.currentPlayItem?.id || this.currentDetail?.id || ''}/${season}/${episode}?primaryColor=bcb462&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&player=jw&title=true&poster=true&autoplay=true&mute=false&nextbutton=true`,
+          this.getVidLinkResumeTime(this.currentPlayItem)
+        ),
+        type: 'iframe',
+		category: 'anime'
+      },
+	  {
+	   name: 'vidcore (dub)',
+        url: `https://www.vidcore.org/embed/tv/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'anime'
+      },
 	   {
 		name: 'videasy Anime',
         url: `https://player.videasy.net/anime/${this.anilistId}/${season}/${episode}?nextEpisode=true&autoplayNextEpisode=true&episodeSelector=true&overlay=true&color=8B5CF6`,
@@ -7273,6 +7294,27 @@ async fetchAnilistId(title) {
 		category: 'movie'
       },
 	  ///anime
+	   {
+	    name: 'vyla (dub)',
+        url: `http://player.vyla.cc/?id=${this.currentDetail?.id}`,
+        type: 'iframe',
+		category: 'anime'
+      },
+	{
+        name: 'vidlink (dub)',
+        url: this.buildVidLinkUrl(
+          `https://vidlink.pro/movie/${this.currentPlayItem?.id || this.currentDetail?.id || ''}?primaryColor=bcb462&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&player=jw&title=true&poster=true&autoplay=true&mute=false&nextbutton=false`,
+          this.getVidLinkResumeTime(this.currentPlayItem)
+        ),
+        type: 'iframe',
+		category: 'anime'
+      },
+	   {
+	   name: 'vidcore (dub)',
+        url: `https://www.vidcore.org/embed/movie/${this.currentDetail?.id}`,
+        type: 'iframe',
+		category: 'anime'
+      },
 	 {
 	 name: 'videasy Anime',
      url: `https://player.videasy.net/anime/${this.currentPlayItem?.id || this.anilistId || ''}/1?nextEpisode=false&autoplayNextEpisode=true&episodeSelector=true&overlay=true&color=8B5CF6`,
