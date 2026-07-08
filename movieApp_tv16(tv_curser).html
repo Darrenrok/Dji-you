@@ -5306,6 +5306,12 @@ rows.forEach((r, i) => {
         type: 'iframe',
 		category: 'tv'
       },
+		{
+	   name: 'vidspark',
+        url: `https://vidspark.to/tv/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'tv'
+      },
 	   {
 	   name: 'vidsrc.to',
         url: ` https://vidsrc.to/embed/tv/${this.currentDetail?.id}/${season}/${episode}`,
@@ -7130,6 +7136,12 @@ async fetchAnilistId(title) {
 	   {
 	   name: 'vidcore',
         url: `https://www.vidcore.org/embed/movie/${this.currentDetail?.id}`,
+        type: 'iframe',
+		category: 'movie'
+      },
+	   {
+	   name: 'vidspark',
+        url: `https://vidspark.to/movie/${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
