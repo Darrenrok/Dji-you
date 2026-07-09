@@ -5355,6 +5355,18 @@ rows.forEach((r, i) => {
 		category: 'tv'
       },
 		{
+	    name: 'streamrip',
+        url: `https://streamrip-website-production.up.railway.app/tv/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'tv'
+      },
+		{
+		name: 'streamrip',
+        url: `https://streamrip-website-production.up.railway.app/anime/${this.anilistId}/${episode}`,
+        type: 'iframe',
+		category: 'anime'
+      },
+		{
 	    name: 'vyla',
         url: `http://player.vyla.cc/?id=${this.currentDetail?.id}&season=${season}&epsode=${episode}`,
         type: 'iframe',
@@ -7171,6 +7183,12 @@ async fetchAnilistId(title) {
 	  {
 	   name: 'vidplus',
         url: `https://player.vidplus.to/embed/movie/${this.currentPlayItem?.id || this.currentDetail?.id || ''}?autoplay=true&poster=true&title=true&download=true&watchparty=true&chromecast=true&servericon=true&setting=true&pip=true&primarycolor=6C63FF&secondarycolor=9F9BFF&iconcolor=FFFFFF&logourl=https%3A%2F%2Fi.ibb.co%2F67wTJd9R%2Fpngimg-com-netflix-PNG11.png&font=Roboto&fontcolor=FFFFFF&fontsize=20&opacity=0.5`,
+        type: 'iframe',
+		category: 'movie'
+      },
+	     {
+	   name: 'streamrip',
+        url: `https://streamrip-website-production.up.railway.app/movie/${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
