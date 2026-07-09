@@ -5278,18 +5278,11 @@ rows.forEach((r, i) => {
 ///https://vidsrc.domains/
     // Build a list of source URLs to try (in priority order) for TV episodes
     const tv_sources = [
-	
-       {
-	    name: 'vyla',
-        url: `http://player.vyla.cc/?id=${this.currentDetail?.id}&season=${season}&epsode=${episode}`,
+			{
+	   name: 'vidspark',
+        url: `https://vidspark.to/tv/${this.currentDetail?.id}/${season}/${episode}`,
         type: 'iframe',
 		category: 'tv'
-      },
-	  {
-	    name: 'vyla (dub)',
-        url: `http://player.vyla.cc/?id=${this.currentDetail?.id}&season=${season}&epsode=${episode}`,
-        type: 'iframe',
-		category: 'anime'
       },
 			{
         name: 'vidlink',
@@ -5303,12 +5296,6 @@ rows.forEach((r, i) => {
 	  {
 	   name: 'vidcore',
         url: `https://www.vidcore.org/embed/tv/${this.currentDetail?.id}/${season}/${episode}`,
-        type: 'iframe',
-		category: 'tv'
-      },
-		{
-	   name: 'vidspark',
-        url: `https://vidspark.to/tv/${this.currentDetail?.id}/${season}/${episode}`,
         type: 'iframe',
 		category: 'tv'
       },
@@ -5366,6 +5353,18 @@ rows.forEach((r, i) => {
         url: ` https://multiembed.mov/?video_id=${imdbId}&s=${season}&e=${episode}`,
         type: 'iframe',
 		category: 'tv'
+      },
+		{
+	    name: 'vyla',
+        url: `http://player.vyla.cc/?id=${this.currentDetail?.id}&season=${season}&epsode=${episode}`,
+        type: 'iframe',
+		category: 'tv'
+      },
+	  {
+	    name: 'vyla (dub)',
+        url: `http://player.vyla.cc/?id=${this.currentDetail?.id}&season=${season}&epsode=${episode}`,
+        type: 'iframe',
+		category: 'anime'
       },
    {
         name: 'vidsrcme',
@@ -7118,9 +7117,9 @@ async fetchAnilistId(title) {
 
     // Build a list of source URLs MOVIE
    const movie_sources = [
-   {
-	    name: 'vyla',
-        url: `http://player.vyla.cc/?id=${this.currentDetail?.id}`,
+	   {
+	   name: 'vidspark',
+        url: `https://vidspark.to/movie/${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
@@ -7136,12 +7135,6 @@ async fetchAnilistId(title) {
 	   {
 	   name: 'vidcore',
         url: `https://www.vidcore.org/embed/movie/${this.currentDetail?.id}`,
-        type: 'iframe',
-		category: 'movie'
-      },
-	   {
-	   name: 'vidspark',
-        url: `https://vidspark.to/movie/${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
@@ -7178,6 +7171,12 @@ async fetchAnilistId(title) {
 	  {
 	   name: 'vidplus',
         url: `https://player.vidplus.to/embed/movie/${this.currentPlayItem?.id || this.currentDetail?.id || ''}?autoplay=true&poster=true&title=true&download=true&watchparty=true&chromecast=true&servericon=true&setting=true&pip=true&primarycolor=6C63FF&secondarycolor=9F9BFF&iconcolor=FFFFFF&logourl=https%3A%2F%2Fi.ibb.co%2F67wTJd9R%2Fpngimg-com-netflix-PNG11.png&font=Roboto&fontcolor=FFFFFF&fontsize=20&opacity=0.5`,
+        type: 'iframe',
+		category: 'movie'
+      },
+	   {
+	    name: 'vyla',
+        url: `http://player.vyla.cc/?id=${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
