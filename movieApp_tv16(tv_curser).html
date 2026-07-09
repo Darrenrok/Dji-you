@@ -5305,6 +5305,12 @@ rows.forEach((r, i) => {
         type: 'iframe',
 		category: 'tv'
       },
+		  {
+	   name: 'vidsrc.sbs',
+        url: `https://vidsrc.sbs/embed/tv/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'tv'
+      },
 	  {
 	    name: 'vidapi-qzz',
         url: `https://vidapi.qzz.io/tv/${imdbId}/${season}/${episode}?primaryColor=63b8bc&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&player=nf&title=true&poster=true&autoplay=true&nextbutton=true`,
@@ -7158,6 +7164,12 @@ async fetchAnilistId(title) {
 	  {
 	   name: 'vidsrc.to',
         url: ` https://vidsrc.to/embed/movie/${this.currentDetail?.id}`,
+        type: 'iframe',
+		category: 'movie'
+      },
+	     {
+	   name: 'vidsrc.sbs',
+        url: `https://vidsrc.sbs/embed/movie/${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
