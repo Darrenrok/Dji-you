@@ -5347,7 +5347,12 @@ rows.forEach((r, i) => {
         type: 'iframe',
 		category: 'tv'
       },
-	  
+	  {
+	  name: 'vixsrc',
+        url: ` https://vixsrc.to/tv/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'tv'
+      },
 	  {
 	  name: 'superembed',
         url: ` https://multiembed.mov/?video_id=${imdbId}&s=${season}&e=${episode}`,
@@ -7195,6 +7200,12 @@ async fetchAnilistId(title) {
 	   {
 	    name: 'vyla',
         url: `http://player.vyla.cc/?id=${this.currentDetail?.id}`,
+        type: 'iframe',
+		category: 'movie'
+      },
+	   {
+	   name: 'vixsrc',
+        url: `https://vixsrc.to/movie/${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
