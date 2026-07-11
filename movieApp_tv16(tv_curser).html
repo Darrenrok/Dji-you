@@ -5739,6 +5739,12 @@ rows.forEach((r, i) => {
 ///https://vidsrc.domains/
     // Build a list of source URLs to try (in priority order) for TV episodes
     const tv_sources = [
+		{
+	  name: 'fmovies4',
+        url: `https://fmovies4u.com/embed/tv/${this.currentDetail?.id}/${season}/${episode}?autoPlay=true`,
+        type: 'iframe',
+		category: 'tv'
+      },
 			{
 	   name: 'vidspark',
         url: `https://vidspark.to/tv/${this.currentDetail?.id}/${season}/${episode}`,
@@ -5837,12 +5843,6 @@ rows.forEach((r, i) => {
         url: `https://fmovies4u.com/embed/tv/${this.currentDetail?.id}/${season}/${episode}?autoPlay=true`,
         type: 'iframe',
 		category: 'anime'
-      },
-	  {
-	  name: 'fmovies4',
-        url: `https://fmovies4u.com/embed/tv/${this.currentDetail?.id}/${season}/${episode}?autoPlay=true`,
-        type: 'iframe',
-		category: 'tv'
       },
 	  {
 	  name: 'vidrock',
@@ -8027,6 +8027,12 @@ toggleVivamaxVisibility() {
 
     // Build a list of source URLs MOVIE
    const movie_sources = [
+	     {
+	   name: 'fmovies',
+        url: `https://fmovies4u.com/embed/movie/${this.currentDetail?.id}?autoPlay=true`,
+        type: 'iframe',
+		category: 'movie'
+      },
 	   {
 	   name: 'vidspark',
         url: `https://vidspark.to/movie/${this.currentDetail?.id}`,
@@ -8125,12 +8131,6 @@ toggleVivamaxVisibility() {
         url: `https://fmovies4u.com/embed/movie/${this.currentDetail?.id}?autoPlay=true`,
         type: 'iframe',
 		category: 'anime'
-      },
-	  {
-	   name: 'fmovies',
-        url: `https://fmovies4u.com/embed/movie/${this.currentDetail?.id}?autoPlay=true`,
-        type: 'iframe',
-		category: 'movie'
       },
 	  {
 	   name: 'cinesrc',
