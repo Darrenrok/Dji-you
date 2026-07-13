@@ -5754,6 +5754,18 @@ rows.forEach((r, i) => {
     // Build a list of source URLs to try (in priority order) for TV episodes
     const tv_sources = [
 			{
+	   name: 'cinextream',
+        url: `https://cinextream.net/api/embed/tv/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'tv'
+      },
+			{
+	   name: 'cinextream',
+        url: `https://cinextream.net/api/anime/embed/lang/${this.anilistId}/${episode}`,
+        type: 'iframe',
+		category: 'anime'
+      },
+			{
 	   name: 'vidspark',
         url: `https://vidspark.to/tv/${this.currentDetail?.id}/${season}/${episode}`,
         type: 'iframe',
@@ -6030,7 +6042,7 @@ rows.forEach((r, i) => {
       },
 	   {
         name: 'imdb.su (dub)',
-        url: `https://player.imdb.su/embed/tv/${imdbId}/${season}/${episode}`,
+        url: `https://player.imdb.su/embed/tv/${imdbId}/${episode}`,
         type: 'iframe',
 		category: 'anime'
       },
@@ -8060,6 +8072,12 @@ toggleVivamaxVisibility() {
 
     // Build a list of source URLs MOVIE
    const movie_sources = [
+	   {
+	   name: 'cinextream',
+        url: `https://cinextream.net/api/embed/movie/${this.currentDetail?.id}`,
+        type: 'iframe',
+		category: 'movie'
+      },
 	      {
 	   name: 'vidspark',
         url: `https://vidspark.to/movie/${this.currentDetail?.id}`,
