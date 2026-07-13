@@ -5783,6 +5783,12 @@ rows.forEach((r, i) => {
         type: 'iframe',
 		category: 'tv'
       },
+			{
+	   name: 'vidsrc.wiki',
+        url: `https://vidsrc.wiki/embed/tv/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'tv'
+      },
 	  	{
 	   name: 'apiplayer',
         url: `https://apiplayer.ru/embed/tv/${this.currentDetail?.id}/${season}/${episode}`,
@@ -8087,6 +8093,12 @@ toggleVivamaxVisibility() {
 	     {
 	   name: 'cinesrc',
         url: `https://cinesrc.st/embed/movie/${this.currentDetail?.id}?autoPlay=true`,
+        type: 'iframe',
+		category: 'movie'
+      },
+	   {
+	   name: 'vidsrc.wiki',
+        url: `https://vidsrc.wiki/embed/movie/${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
