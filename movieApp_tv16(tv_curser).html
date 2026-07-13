@@ -5753,6 +5753,12 @@ rows.forEach((r, i) => {
 ///https://vidsrc.domains/
     // Build a list of source URLs to try (in priority order) for TV episodes
     const tv_sources = [
+			{
+	   name: 'vidspark',
+        url: `https://vidspark.to/tv/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'tv'
+      },
 		   {
 	  name: 'cinesrc',
         url: `https://cinesrc.st/embed/tv/${this.currentDetail?.id}?s=${season}&e=${episode}?autoPlay=true`,
@@ -5762,12 +5768,6 @@ rows.forEach((r, i) => {
 		{
 	  name: 'fmovies4',
         url: `https://fmovies4u.com/embed/tv/${this.currentDetail?.id}/${season}/${episode}?autoPlay=true`,
-        type: 'iframe',
-		category: 'tv'
-      },
-			{
-	   name: 'vidspark',
-        url: `https://vidspark.to/tv/${this.currentDetail?.id}/${season}/${episode}`,
         type: 'iframe',
 		category: 'tv'
       },
@@ -5783,12 +5783,6 @@ rows.forEach((r, i) => {
           `https://vidlink.pro/tv/${this.currentPlayItem?.id || this.currentDetail?.id || ''}/${season}/${episode}?primaryColor=bcb462&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&player=jw&title=true&poster=true&autoplay=true&mute=false&nextbutton=true`,
           this.getVidLinkResumeTime(this.currentPlayItem)
         ),
-        type: 'iframe',
-		category: 'tv'
-      },
-	     {
-	  name: 'anyembed (tv_only)',
-        url: `https://anyembed.xyz/embed/tmdb-tv-${this.currentDetail?.id}-${season}-${episode}`,
         type: 'iframe',
 		category: 'tv'
       },
@@ -5927,18 +5921,6 @@ rows.forEach((r, i) => {
 		{
 		name: 'streamrip',
         url: `https://streamrip-website-production.up.railway.app/anime/${this.anilistId}/${episode}`,
-        type: 'iframe',
-		category: 'anime'
-      },
-		{
-	    name: 'vyla',
-        url: `http://player.vyla.cc/?id=${this.currentDetail?.id}&season=${season}&epsode=${episode}`,
-        type: 'iframe',
-		category: 'tv'
-      },
-	  {
-	    name: 'vyla (dub)',
-        url: `http://player.vyla.cc/?id=${this.currentDetail?.id}&season=${season}&epsode=${episode}`,
         type: 'iframe',
 		category: 'anime'
       },
@@ -8078,7 +8060,12 @@ toggleVivamaxVisibility() {
 
     // Build a list of source URLs MOVIE
    const movie_sources = [
-  
+	      {
+	   name: 'vidspark',
+        url: `https://vidspark.to/movie/${this.currentDetail?.id}`,
+        type: 'iframe',
+		category: 'movie'
+      },
 	     {
 	   name: 'cinesrc',
         url: `https://cinesrc.st/embed/movie/${this.currentDetail?.id}?autoPlay=true`,
@@ -8088,12 +8075,6 @@ toggleVivamaxVisibility() {
 	     {
 	   name: 'fmovies',
         url: `https://fmovies4u.com/embed/movie/${this.currentDetail?.id}?autoPlay=true`,
-        type: 'iframe',
-		category: 'movie'
-      },
-	   {
-	   name: 'vidspark',
-        url: `https://vidspark.to/movie/${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
@@ -8109,12 +8090,6 @@ toggleVivamaxVisibility() {
           `https://vidlink.pro/movie/${this.currentPlayItem?.id || this.currentDetail?.id || ''}?primaryColor=bcb462&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&player=jw&title=true&poster=true&autoplay=true&mute=false&nextbutton=false`,
           this.getVidLinkResumeTime(this.currentPlayItem)
         ),
-        type: 'iframe',
-		category: 'movie'
-      },
-	  {
-	   name: 'anyembed (tv_only)',
-        url: `https://anyembed.xyz/embed/tmdb-movie-${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
@@ -8193,12 +8168,6 @@ toggleVivamaxVisibility() {
 	     {
 	   name: 'streamrip',
         url: `https://streamrip-website-production.up.railway.app/movie/${this.currentDetail?.id}`,
-        type: 'iframe',
-		category: 'movie'
-      },
-	   {
-	    name: 'vyla',
-        url: `http://player.vyla.cc/?id=${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
