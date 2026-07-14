@@ -5796,12 +5796,6 @@ rows.forEach((r, i) => {
 		category: 'tv'
       },
 		{
-        name: 'redflix', 
-		url:`https://redflix.one/play?id=${this.currentDetail?.id}&type=tv&season=${season}&episode=${episode}&server=vidbolt`,
-        type: 'iframe',
-		category: 'tv'
-      },
-			{
 	   name: 'cinextream',
         url: `https://cinextream.net/api/anime/embed/lang/${this.anilistId}/${episode}`,
         type: 'iframe',
@@ -8156,13 +8150,7 @@ toggleVivamaxVisibility() {
         type: 'iframe',
 		category: 'movie'
       },
-	   {
-        name: 'vidsrc_4',
-        url: `https://redflix.one/play?id=${this.currentDetail?.id}&type=movie&server=vidbolt`,
-        type: 'iframe',
-		category: 'movie'
-      },
-	      {
+	     {
 	   name: 'vidspark',
         url: `https://vidspark.to/movie/${this.currentDetail?.id}`,
         type: 'iframe',
