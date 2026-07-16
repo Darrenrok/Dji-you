@@ -5828,6 +5828,12 @@ rows.forEach((r, i) => {
         type: 'iframe',
 		category: 'tv'
       },
+			{
+	  name: 'vidstreams',
+        url: `https://vidstreams.net/embed/tvd${this.currentDetail?.id}/${season}/${episode}?autoPlay=true`,
+        type: 'iframe',
+		category: 'tv'
+      },
 		{
 	  name: 'fmovies4',
         url: `https://fmovies4u.com/embed/tv/${this.currentDetail?.id}/${season}/${episode}?autoPlay=true`,
@@ -8267,6 +8273,12 @@ toggleVivamaxVisibility() {
 	   {
 	   name: 'vidsrc.wiki',
         url: `https://vidsrc.wiki/embed/movie/${this.currentDetail?.id}`,
+        type: 'iframe',
+		category: 'movie'
+      },
+	 {
+	   name: 'vidstreams',
+        url: `https://vidstreams.net/embed/tmdb${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
