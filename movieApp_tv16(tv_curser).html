@@ -5830,7 +5830,7 @@ rows.forEach((r, i) => {
       },
 			{
 	  name: 'vidfast',
-        url: `https://vidfast.vc/tv/${this.currentDetail?.id}/${season}/${episode}`,
+        url: `https://vidfast.vc/tv/${this.currentDetail?.id}/${season}/${episode}?nextButton=true&autoNext=true`,
         type: 'iframe',
 		category: 'tv'
       },
@@ -8278,7 +8278,7 @@ toggleVivamaxVisibility() {
       },
 	 {
 	   name: 'vidfast',
-        url: `https://vidfast.vc/movie/${this.currentDetail?.id}`,
+        url: `https://vidfast.vc/movie/${this.currentDetail?.id}?autoPlay=true`,
         type: 'iframe',
 		category: 'movie'
       },
