@@ -5007,7 +5007,7 @@ startAutoSelect(title, isTv, season, episode) {
   const titleEl = document.getElementById('sourceSelectTitle');
   if (!titleEl) return;
   
-  let countdown = 10;
+  let countdown = 5;
   const baseTitle = isTv 
     ? `${title} - S${season}:E${episode} - Select Source` 
     : `${title} - Select Source`;
@@ -5032,12 +5032,12 @@ startAutoSelect(title, isTv, season, episode) {
     }
   }, 1000);
   
-  // Auto-select after 10 seconds
+  // Auto-select after 2 seconds
   this._autoSelectTimer = setTimeout(() => {
     if (!this._userSelectedSource && this._pendingSources && this._pendingSources.length > 0) {
       this.selectSource(0);
     }
-  }, 10000);
+  }, 2000);
 },
 /////////////////////////////////
 cancelAutoSelect() {
@@ -11579,7 +11579,7 @@ document.addEventListener('DOMContentLoaded', () => app.init());
   <div class="source-select-content" id="sourceSelectContent">
     <div class="source-loading">
       <div class="player-spinner"></div>
-      <span style="color:var(--text-muted);font-size:14px;">Loading sources...</span>
+      <span style="color:var(--text-muted);font-size:14px;">Checking sources...Please Wait!</span>
     </div>
   </div>
 </div>
