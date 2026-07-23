@@ -3959,7 +3959,7 @@ async function isUrlActive(baseUrl) {
   const start = performance.now();
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    const timeout = setTimeout(() => controller.abort(), 500);
     await fetch(baseUrl, { 
       method: 'HEAD',
       mode: 'no-cors',
@@ -3974,7 +3974,7 @@ async function isUrlActive(baseUrl) {
   }
 }
 
-async function checkSourcesHealth(sources, maxConcurrent = 5) {
+async function checkSourcesHealth(sources, maxConcurrent = 15) {
   // Extract unique base URLs
   const domainMap = new Map();
   
