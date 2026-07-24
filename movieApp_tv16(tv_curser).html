@@ -6355,6 +6355,19 @@ rows.forEach((r, i) => {
         type: 'iframe',
 		category: 'tv'
       },
+		{
+	   name: 'filmu',
+        url: `https://embed.filmu.in/tv/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'tv'
+      },
+		
+			{
+	   name: 'filmu',
+        url: `https://embed.filmu.in/anime/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'anime'
+      },
 	  	{
 	   name: 'cinemaos',
         url: `https://cinemaos.live/tv/watch/${this.currentDetail?.id}?season=${season}&episode=${episode}`,
@@ -8915,6 +8928,12 @@ toggleVivamaxVisibility() {
 	  {
 	   name: 'primesrc',
         url: `https://primesrc.me/embed/movie?tmdb=${this.currentDetail?.id}`,
+        type: 'iframe',
+		category: 'movie'
+      },
+		{
+	   name: 'filmu',
+        url: `https://embed.filmu.in/movie/${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
