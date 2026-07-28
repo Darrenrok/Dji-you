@@ -3513,7 +3513,7 @@ episode-item.tv-focus {
     </button>--->
     <div style="padding:16px;background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border);">
       <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">App Version</div>
-      <div class="logo_v" style="font-size:15px;font-weight:700;">Streamers 0.7.1</div>
+      <div class="logo_v" style="font-size:15px;font-weight:700;">Streamers 0.7.2</div>
     </div>
     <div style="padding:16px;background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border);">
       <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">Data Source</div>
@@ -7581,7 +7581,7 @@ const url=""
       results.innerHTML = '<div class="empty"><h3>Searching...</h3></div>';
 
       try {
-        const res = await fetch(`${BASE}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=1`);
+        const res = await fetch(`${BASE}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=1&include_adult=true`);
         const data = await res.json();
         const items = (data.results || []).filter(r => r.media_type === 'movie' || r.media_type === 'tv');
 
