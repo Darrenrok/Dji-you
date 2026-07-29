@@ -7064,6 +7064,18 @@ rows.forEach((r, i) => {
         type: 'iframe',
 		category: 'tv'
       },
+		{
+	   name: 'vidrift',
+        url: `https://embed.vidrift.in/embed/tv/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'tv'
+      },
+		{
+			name: 'vidrift(dub)',
+        url: `https://embed.vidrift.in/embed/anime/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'anime'
+      },
 	  {
 	   name: 'vidsrc_1',
         url: `https://www.vidsrc.wtf/1/tv/${this.currentDetail?.id}/${season}/${episode}?color=e01621`,
@@ -9678,6 +9690,12 @@ toggleVivamaxVisibility() {
 	  {
 	   name: 'vidking',
         url: `https://www.vidking.net/embed/movie/${this.currentDetail?.id}`,
+        type: 'iframe',
+		category: 'movie'
+      },
+		{
+	   name: 'vidrift',
+        url: `https://embed.vidrift.in/embed/movie/${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
