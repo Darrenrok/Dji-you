@@ -4351,7 +4351,7 @@ async function checkSourcesHealth(sources, maxConcurrent = 15) {
 getAllSourceNames() {
   // Exact names from your movie_sources & tv_sources arrays
   const names = [
-    'net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
+    'stigstream','net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
     'viduki1','viduki2','viduki3','viduki4',
 	'67movies','ANIME MEGAPLAY (anilist-dub)','ANIME MEGAPLAY (anilist-sub)',
     'ANIME MEGAPLAY (mal-dub)','ANIME MEGAPLAY (mal-sub)','apiplayer','arrowtv',
@@ -7239,6 +7239,12 @@ rows.forEach((r, i) => {
         type: 'iframe',
 		category: 'tv'
       },
+		  {
+	   name: 'stigstream',
+        url: `https://stigstream.ru/tv/watch/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'tv'
+      },
 	  {
 	   name: 'nontongo(dub)',
         url: `https://nontongo.win/anime/${this.anilistId}/${episode}/play`,
@@ -9943,6 +9949,12 @@ toggleVivamaxVisibility() {
 		{
 			name: 'net27',
         url: `https://net27.cc/#w=${this.currentDetail?.id}-movie`,
+        type: 'iframe',
+		category: 'movie'
+      },
+		{
+			name: 'stigstream',
+        url: `https://stigstream.ru/movie/watch/${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
