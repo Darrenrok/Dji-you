@@ -3875,7 +3875,7 @@ episode-item.tv-focus {
     </button>--->
     <div style="padding:16px;background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border);">
       <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">App Version</div>
-      <div class="logo_v" style="font-size:15px;font-weight:700;">Streamers 0.8.3</div>
+      <div class="logo_v" style="font-size:15px;font-weight:700;">Streamers 0.8.4</div>
     </div>
     <div style="padding:16px;background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border);">
       <div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">Data Source</div>
@@ -4564,7 +4564,7 @@ async loadMoviesByGenre(genreId, append = false) {
 getAllSourceNames() {
   // Exact names from your movie_sources & tv_sources arrays
   const names = [
-    'meowtv','stigstream','net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
+    'nexus(sub)','meowtv','stigstream','net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
     'viduki1','viduki2','viduki3','viduki4',
 	'67movies','ANIME MEGAPLAY (anilist-dub)','ANIME MEGAPLAY (anilist-sub)',
     'ANIME MEGAPLAY (mal-dub)','ANIME MEGAPLAY (mal-sub)','apiplayer','arrowtv',
@@ -7743,6 +7743,19 @@ rows.forEach((r, i) => {
         url: `https://vidapi.ru/embed/tv/${imdbId}/${season}/${episode}?skin=netflix&color=ffa500&title=false`,
         type: 'iframe',
 		category: 'tv'
+      },
+		{
+	    name: 'nexus(dub)',
+        url: `https://anime-nexus-blue.vercel.app/anime/${this.anilistId}/${episode}/dub`,
+        type: 'iframe',
+		category: 'anime'
+      },
+		
+		{
+	    name: 'nexus(sub)',
+        url: `https://anime-nexus-blue.vercel.app/anime/${this.anilistId}/${episode}/sub`,
+        type: 'iframe',
+		category: 'anime'
       },
       {
 	   name: 'vidplus',
