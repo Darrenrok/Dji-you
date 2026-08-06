@@ -4564,7 +4564,7 @@ async loadMoviesByGenre(genreId, append = false) {
 getAllSourceNames() {
   // Exact names from your movie_sources & tv_sources arrays
   const names = [
-    'moviesapi(anime)','moviesapi','nexus(sub)','meowtv','stigstream','net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
+    'embos2','embos4','embos7','moviesapi(anime)','moviesapi','nexus(sub)','meowtv','stigstream','net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
     'viduki1','viduki2','viduki3','viduki4',
 	'67movies','ANIME MEGAPLAY (anilist-dub)','ANIME MEGAPLAY (anilist-sub)',
     'ANIME MEGAPLAY (mal-dub)','ANIME MEGAPLAY (mal-sub)','apiplayer','arrowtv',
@@ -7435,6 +7435,24 @@ rows.forEach((r, i) => {
 		category: 'tv'
       },
 	{
+		name: 'embos7',
+        url: `https://embos.top/tv/?mid=${this.currentDetail?.id}&s=${season}&e=${episode}&sv=7`,
+        type: 'iframe',
+		category: 'tv'
+      },
+		{
+			name: 'embos1',
+        url: `https://embos.top/tv/?mid=${this.currentDetail?.id}&s=${season}&e=${episode}&sv=2`,
+        type: 'iframe',
+		category: 'tv'
+      },
+		{
+			name: 'embos4',
+        url: `https://embos.top/tv/?mid=${this.currentDetail?.id}&s=${season}&e=${episode}&sv=4`,
+        type: 'iframe',
+		category: 'tv'
+      },
+	{
 	name: 'moviesapi(anime)',
         url: `https://moviesapi.to/tv/${this.currentDetail?.id}/${season}/${episode}?theme=8b5cf6`,
         type: 'iframe',
@@ -10295,6 +10313,23 @@ toggleVivamaxVisibility() {
 	  {
 	   name: 'viduki4',
         url: `https://www.viduki.net/4/movie/${this.currentDetail?.id}`,
+		category: 'movie'
+      },
+		{
+	   name: 'embos2',
+        url: `https://embos.top/movie/?mid=${this.currentDetail?.id}&sv=2`,
+        type: 'iframe',
+		category: 'movie'
+      },
+		{
+			name: 'embos4',
+        url: `https://embos.top/movie/?mid=${this.currentDetail?.id}&sv=4`,
+        type: 'iframe',
+		category: 'movie'
+      },
+		{
+			name: 'embos7',
+        url: `https://embos.top/movie/?mid=${this.currentDetail?.id}&sv=7`,
         type: 'iframe',
 		category: 'movie'
       },
