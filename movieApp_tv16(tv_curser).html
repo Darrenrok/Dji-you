@@ -4564,7 +4564,7 @@ async loadMoviesByGenre(genreId, append = false) {
 getAllSourceNames() {
   // Exact names from your movie_sources & tv_sources arrays
   const names = [
-    'embos2','embos4','embos7','moviesapi(anime)','moviesapi','nexus(sub)','meowtv','stigstream','net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
+    'vidsrch','embos2','embos4','embos7','moviesapi(anime)','moviesapi','nexus(sub)','meowtv','stigstream','net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
     'viduki1','viduki2','viduki3','viduki4',
 	'67movies','ANIME MEGAPLAY (anilist-dub)','ANIME MEGAPLAY (anilist-sub)',
     'ANIME MEGAPLAY (mal-dub)','ANIME MEGAPLAY (mal-sub)','apiplayer','arrowtv',
@@ -7675,6 +7675,12 @@ rows.forEach((r, i) => {
         type: 'iframe',
 		category: 'tv'
       },
+			{
+	   name: 'vidsrch',
+        url: `https://vidsrc.hair/embed/tv/${this.currentDetail?.id}/${season}/${episode}?autoplay=true`,
+        type: 'iframe',
+		category: 'tv'
+      },
 		   {
 	  name: 'cinesrc',
         url: `https://cinesrc.st/embed/tv/${this.currentDetail?.id}?s=${season}&e=${episode}?autoPlay=true`,
@@ -10229,6 +10235,12 @@ toggleVivamaxVisibility() {
 		{
 			name: 'net27',
         url: `https://net27.cc/#w=${this.currentDetail?.id}-movie`,
+        type: 'iframe',
+		category: 'movie'
+      },
+		{
+			name: 'vidsrch',
+        url: `https://vidsrc.hair/embed/movie/${this.currentDetail?.id}?autoplay=true`,
         type: 'iframe',
 		category: 'movie'
       },
