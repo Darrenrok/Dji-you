@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0e1a">
+<meta name="tv-app" content="true">
+<link href="https://fonts.cdnfonts.com/css/font-breakdown" rel="stylesheet">
+
+<style>
+    *{margin:0;padding:0;box-sizing:border-box}
+
+    html {
+        font-size: 16px;
+    }
+
+    body{
+        background:#0a0e1a;
+        color:#e0e6ed;
+        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+        min-height:100vh;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        padding:60px 40px;
+        padding-top: calc(10vh + 60px);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        overflow-x: hidden;
+    }
+
+    h1{
+        color:#00E5FF;
+        font-size:48px;
+        margin-bottom:10px;
+        text-shadow:0 0 30px rgba(0,229,255,0.3)
+    }
+
+    p{
+        color:#6b7280;
+        margin-bottom:50px;
+        font-size:18px;
+        text-align:center;
+        max-width:800px;
+        line-height:1.5
+    }
+
+    .grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+        gap:24px;
+        width:100%;
+        max-width:1200px
+    }
+
+    .tile{
+        background:#111827;
+        border:2px solid #1f2937;
+        border-radius:16px;
+        padding:40px 20px;
+        text-align:center;
+        cursor:pointer;
+        transition:all .18s ease;
+        outline:none;
+        position: relative;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .tile:focus,.tile:hover{
+        border-color:#00E5FF;
+        transform:scale(1.06);
+        box-shadow:0 0 0 4px rgba(0,229,255,0.2),0 0 30px rgba(0,229,255,0.15)
+    }
+
+    /* TV Focus State - Enhanced visibility */
+    .tile.tv-focused {
+        border-color: #00E5FF !important;
+        transform: scale(1.08);
+        box-shadow: 0 0 0 6px rgba(0,229,255,0.4), 0 0 40px rgba(0,229,255,0.3), inset 0 0 20px rgba(0,229,255,0.1);
+        z-index: 10;
+    }
+
+    /* Mobile Active State */
+    .tile:active {
+        transform: scale(0.96);
+        transition: transform 0.1s ease;
+    }
+
+    .icon{
+        font-size:48px;
+        margin-bottom:16px;
+        display:block
+    }
+
+    .label{
+        font-size:20px;
+        font-weight:700;
+        color:#f3f4f6
+    }
+
+    .url{
+        font-size:13px;
+        color:#6b7280;
+        margin-top:6px
+    }
+
+    #title {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 10vh;
+        min-height: 60px;
+        font-family: 'font breakdown', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(10, 14, 26, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    #title:hover {
+        box-shadow: 
+            0 0 20px rgba(0, 240, 255, 0.3),
+            0 0 40px rgba(0, 240, 255, 0.2),
+            inset 0 0 20px rgba(0, 240, 255, 0.1);
+        border-bottom: 1px solid rgba(0, 240, 255, 0.5);
+    }
+
+    #title h1 {
+        color: white;
+        font-size: clamp(24px, 4vw, 48px);
+        margin: 0;
+        text-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+    }
+
+    /* ==================== MOBILE RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        html { font-size: 14px; }
+
+        body {
+            padding: 20px 16px;
+            padding-top: calc(10vh + 20px);
+        }
+
+        .grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            max-width: 100%;
+        }
+
+        .tile {
+            padding: 24px 12px;
+            border-radius: 12px;
+        }
+
+        .icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .label {
+            font-size: 16px;
+        }
+
+        .url {
+            font-size: 11px;
+        }
+
+        p {
+            font-size: 14px;
+            margin-bottom: 24px;
+            padding: 0 10px;
+        }
+
+        #title {
+            height: auto;
+            min-height: 50px;
+            padding: 10px;
+        }
+    }
+
+    @media (max-width: 380px) {
+        .grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ==================== TABLET ==================== */
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        body {
+            padding: 40px 30px;
+            padding-top: calc(10vh + 40px);
+        }
+    }
+
+    /* ==================== TV / LARGE SCREEN ==================== */
+    @media (min-width: 1920px), (hover: none) and (min-width: 1200px) {
+        html { font-size: 18px; }
+
+        body {
+            padding: 80px 60px;
+            padding-top: calc(10vh + 80px);
+        }
+
+        .grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            max-width: 1600px;
+        }
+
+        .tile {
+            padding: 50px 30px;
+            border-radius: 20px;
+            border-width: 3px;
+        }
+
+        .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .label {
+            font-size: 26px;
+        }
+
+        .url {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        p {
+            font-size: 22px;
+            margin-bottom: 60px;
+        }
+
+        #title {
+            min-height: 80px;
+        }
+
+        #title h1 {
+            font-size: 56px;
+        }
+    }
+
+    /* TV-specific overscan safe area */
+    @media (min-width: 1920px) {
+        body {
+            padding-left: 80px;
+            padding-right: 80px;
+        }
+    }
+
+    /* ==================== LANDSCAPE MOBILE ==================== */
+    @media (max-height: 500px) and (orientation: landscape) {
+        body {
+            padding-top: calc(15vh + 10px);
+        }
+
+        .grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .tile {
+            padding: 16px 10px;
+        }
+
+        .icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .label {
+            font-size: 14px;
+        }
+    }
+
+    /* Scrollbar styling for TV */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #0a0e1a;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #1f2937;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #00E5FF;
+    }
+
+    /* Prevent text selection on TV */
+    @media (hover: none) and (pointer: coarse) {
+        body {
+            -webkit-touch-callout: none;
+        }
+    }
+</style>
+<base target="_blank">
+</head>
+<body>
+<center id="title">
+    <div><h1>Project_tv</h1></div>
+</center>
+
+<div class="grid" id="tileGrid">
+    <div class="tile" data-tv-focusable tabindex="0" onclick="location.href='https://tbcpl.lol/'" data-url="https://tbcpl.lol/">
+        <span class="icon">&#x1F4FA;</span><div class="label">tbcpl</div><div class="url">tbcpl</div>
+    </div>
+    <div class="tile" data-tv-focusable tabindex="0" onclick="location.href='https://pantyflix.com/'" data-url="https://pantyflix.com/">
+        <span class="icon">&#x1F3AE;</span><div class="label">pantyflix</div><div class="url">pantyflix</div>
+    </div>
+    <div class="tile" data-tv-focusable tabindex="0" onclick="location.href='https://vyla.cc/'" data-url="https://vyla.cc/">
+        <span class="icon">&#x1F3AC;</span><div class="label">vyla</div><div class="url">vyla</div>
+    </div>
+    <div class="tile" data-tv-focusable tabindex="0" onclick="location.href='https://www.1flex.org/'" data-url="https://www.1flex.org/">
+        <span class="icon">&#x2728;</span><div class="label">1flex+</div><div class="url">1flex</div>
+    </div>
+    <div class="tile" data-tv-focusable tabindex="0" onclick="location.href='https://vidbox.dev/'" data-url="https://vidbox.dev/">
+        <span class="icon">&#x1F4E1;</span><div class="label">vidbox</div><div class="url">vidbox</div>
+    </div>
+    <div class="tile" data-tv-focusable tabindex="0" onclick="location.href='https://plushub.net/'" data-url="https://plushub.net/">
+        <span class="icon">&#x1F4E6;</span><div class="label">plushub</div><div class="url">plushub</div>
+    </div>
+    <div class="tile" data-tv-focusable tabindex="0" onclick="location.href='https://fmhy.net/'" data-url="https://fmhy.net/">
+        <span class="icon">&#x1F50D;</span><div class="label">fmhy</div><div class="url">fmhy</div>
+    </div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+
+    // ==================== DETECTION ====================
+    const isTV = /(smart-tv|googletv|appletv|hbbtv|pov_tv|netcast.tv|webos.+large|tizen.+tv|playstation|xbox|nintendo|roku|firetv|android.+tv|crkey|sonydtv)/i.test(navigator.userAgent) ||
+                 window.innerWidth >= 1920 ||
+                 window.matchMedia('(hover: none) and (pointer: coarse) and (min-width: 1200px)').matches;
+
+    const isMobile = /(android|iphone|ipad|ipod|blackberry|windows phone|mobile)/i.test(navigator.userAgent) ||
+                     (window.innerWidth <= 768 && 'ontouchstart' in window);
+
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    // ==================== TV NAVIGATION ====================
+    const tiles = Array.from(document.querySelectorAll('[data-tv-focusable]'));
+    let currentFocusIndex = 0;
+    let tvModeEnabled = isTV;
+
+    function getGridDimensions() {
+        const grid = document.getElementById('tileGrid');
+        const style = window.getComputedStyle(grid);
+        const columns = style.gridTemplateColumns.split(' ').length;
+        return {
+            cols: columns,
+            rows: Math.ceil(tiles.length / columns)
+        };
+    }
+
+    function focusTile(index) {
+        if (index < 0) index = 0;
+        if (index >= tiles.length) index = tiles.length - 1;
+
+        currentFocusIndex = index;
+
+        tiles.forEach((tile, i) => {
+            if (i === index) {
+                tile.classList.add('tv-focused');
+                tile.focus({ preventScroll: false });
+
+                // Scroll into view smoothly
+                tile.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center', 
+                    inline: 'center' 
+                });
+            } else {
+                tile.classList.remove('tv-focused');
+            }
+        });
+    }
+
+    function handleTVNavigation(event) {
+        if (!tvModeEnabled) return;
+
+        const grid = getGridDimensions();
+        const currentRow = Math.floor(currentFocusIndex / grid.cols);
+        const currentCol = currentFocusIndex % grid.cols;
+        let newIndex = currentFocusIndex;
+        let handled = false;
+
+        switch(event.key || event.keyCode) {
+            case 'ArrowUp':
+            case 38:
+                event.preventDefault();
+                handled = true;
+                if (currentRow > 0) {
+                    newIndex = currentFocusIndex - grid.cols;
+                } else {
+                    // Wrap to bottom
+                    newIndex = currentFocusIndex + ((grid.rows - 1) * grid.cols);
+                    if (newIndex >= tiles.length) newIndex = tiles.length - 1;
+                }
+                break;
+
+            case 'ArrowDown':
+            case 40:
+                event.preventDefault();
+                handled = true;
+                if (currentRow < grid.rows - 1) {
+                    newIndex = currentFocusIndex + grid.cols;
+                    if (newIndex >= tiles.length) newIndex = tiles.length - 1;
+                } else {
+                    // Wrap to top
+                    newIndex = currentCol;
+                }
+                break;
+
+            case 'ArrowLeft':
+            case 37:
+                event.preventDefault();
+                handled = true;
+                if (currentCol > 0) {
+                    newIndex = currentFocusIndex - 1;
+                } else {
+                    // Wrap to end of previous row
+                    newIndex = currentFocusIndex + grid.cols - 1;
+                    if (newIndex >= tiles.length) newIndex = tiles.length - 1;
+                }
+                break;
+
+            case 'ArrowRight':
+            case 39:
+                event.preventDefault();
+                handled = true;
+                if (currentCol < grid.cols - 1 && currentFocusIndex < tiles.length - 1) {
+                    newIndex = currentFocusIndex + 1;
+                } else {
+                    // Wrap to start of next row
+                    newIndex = currentRow * grid.cols;
+                }
+                break;
+
+            case 'Enter':
+            case 13:
+            case 'OK':
+            case 65376: // Some TV OK keys
+                event.preventDefault();
+                handled = true;
+                const url = tiles[currentFocusIndex].getAttribute('data-url') || 
+                           tiles[currentFocusIndex].getAttribute('onclick').match(/location.href='([^']+)'/)[1];
+                if (url) window.location.href = url;
+                break;
+
+            case 'Back':
+            case 461: // LG webOS
+            case 10009: // Tizen
+                // Let browser handle back
+                break;
+        }
+
+        if (handled) {
+            focusTile(newIndex);
+        }
+    }
+
+    // ==================== MOBILE ENHANCEMENTS ====================
+    function initMobileGestures() {
+        if (!isTouch) return;
+
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchStartTime = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            touchStartTime = Date.now();
+        }, { passive: true });
+
+        document.addEventListener('touchend', function(e) {
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const touchDuration = Date.now() - touchStartTime;
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+
+            // Detect swipe for TV mode toggle (debug feature)
+            if (touchDuration < 300 && Math.abs(deltaX) > 100 && Math.abs(deltaY) < 50) {
+                if (deltaX > 0) {
+                    // Right swipe
+                } else {
+                    // Left swipe
+                }
+            }
+        }, { passive: true });
+
+        // Add haptic feedback on tile press if available
+        tiles.forEach(tile => {
+            tile.addEventListener('touchstart', function() {
+                if (navigator.vibrate) navigator.vibrate(10);
+                this.style.transform = 'scale(0.96)';
+            }, { passive: true });
+
+            tile.addEventListener('touchend', function() {
+                this.style.transform = '';
+            }, { passive: true });
+
+            tile.addEventListener('touchcancel', function() {
+                this.style.transform = '';
+            }, { passive: true });
+        });
+    }
+
+    // ==================== GAMEPAD / REMOTE SUPPORT ====================
+    function pollGamepads() {
+        if (!navigator.getGamepads) return;
+
+        const gamepads = navigator.getGamepads();
+        let activeGamepad = null;
+
+        for (let gp of gamepads) {
+            if (gp) {
+                activeGamepad = gp;
+                break;
+            }
+        }
+
+        if (activeGamepad) {
+            // Enable TV mode if gamepad detected
+            if (!tvModeEnabled) {
+                tvModeEnabled = true;
+                focusTile(0);
+            }
+        }
+    }
+
+    // ==================== INITIALIZATION ====================
+    function init() {
+        // Setup TV navigation
+        if (tvModeEnabled) {
+            document.body.classList.add('tv-mode');
+            focusTile(0);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', handleTVNavigation);
+
+        // Mobile gestures
+        initMobileGestures();
+
+        // Gamepad polling
+        if (navigator.getGamepads) {
+            setInterval(pollGamepads, 1000);
+            window.addEventListener('gamepadconnected', function() {
+                tvModeEnabled = true;
+                focusTile(0);
+            });
+        }
+
+        // Handle window resize (recalculate grid)
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function() {
+                if (tvModeEnabled) {
+                    focusTile(currentFocusIndex);
+                }
+            }, 250);
+        });
+
+        // Handle visibility change
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && tvModeEnabled) {
+                setTimeout(() => focusTile(currentFocusIndex), 100);
+            }
+        });
+
+        // Mouse hover clears TV focus class but keeps functionality
+        tiles.forEach((tile, index) => {
+            tile.addEventListener('mouseenter', function() {
+                if (!tvModeEnabled) return;
+                tiles.forEach(t => t.classList.remove('tv-focused'));
+                currentFocusIndex = index;
+            });
+        });
+
+        // Prevent default on touchmove to avoid scroll bouncing on some TVs
+        if (isTV) {
+            document.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+        }
+    }
+
+    // Start when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+})();
+</script>
+</body>
+</html>
