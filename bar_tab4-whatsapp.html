@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🍺 The Bar Tab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0d0d0d;
+      color: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 520px;
+      background: #1a1a1a;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+    }
+
+    .header {
+      background: #c9a84c;
+      padding: 20px;
+      position: relative;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .header h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #1a1a1a;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .header .subtitle {
+      font-size: 0.7rem;
+      color: #4a3f1a;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .tab-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .tab-bar::-webkit-scrollbar { display: none; }
+
+    .tab-chip {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(26,26,26,0.5);
+      color: #4a3f1a;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+      white-space: nowrap;
+    }
+
+    .tab-chip:hover {
+      background: rgba(26,26,26,0.7);
+    }
+
+    .tab-chip.active {
+      background: #1a1a1a;
+      color: #c9a84c;
+      border-color: #1a1a1a;
+    }
+
+    .tab-chip .tab-name {
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tab-chip .tab-total {
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+
+    .tab-chip .close-tab {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,68,68,0.2);
+      color: #ff4444;
+      font-size: 0.6rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .tab-chip:hover .close-tab { opacity: 1; }
+
+    .add-tab-btn {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px dashed rgba(26,26,26,0.5);
+      background: transparent;
+      color: #4a3f1a;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .add-tab-btn:hover {
+      border-color: #1a1a1a;
+      background: rgba(26,26,26,0.3);
+    }
+
+    .menu-section { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+    .section-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #888;
+      margin-bottom: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .menu-item {
+      background: #242424;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 14px 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-item:hover {
+      background: #2e2e2e;
+      border-color: rgba(201,168,76,0.3);
+      transform: translateY(-2px);
+    }
+
+    .menu-item:active { transform: scale(0.97); }
+
+    .menu-item .item-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #e0e0e0;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .menu-item .item-price {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #c9a84c;
+    }
+
+    .menu-item .add-icon {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 20px;
+      height: 20px;
+      background: rgba(201,168,76,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: #c9a84c;
+      font-weight: 700;
+    }
+
+    .menu-item.custom {
+      border-color: rgba(76,201,168,0.2);
+    }
+
+    .menu-item.custom .add-icon {
+      background: rgba(76,201,168,0.15);
+      color: #4cc9a8;
+    }
+
+    .delete-menu-item {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 18px;
+      height: 18px;
+      background: rgba(255,68,68,0.2);
+      border: none;
+      border-radius: 50%;
+      color: #ff4444;
+      font-size: 0.65rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 2;
+    }
+
+    .menu-item:hover .delete-menu-item { opacity: 1; }
+
+    .add-custom-section {
+      background: #1f1f1f;
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 12px;
+      border: 1px dashed rgba(255,255,255,0.1);
+    }
+
+    .add-custom-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .add-custom-row input {
+      background: #2a2a2a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: #f5f5f5;
+      font-size: 0.8rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+      height: 36px;
+    }
+
+    .add-custom-row input:focus { border-color: #c9a84c; }
+    .add-custom-row input::placeholder { color: #555; font-size: 0.75rem; }
+    .add-custom-row input[name="itemName"] { flex: 2; }
+    .add-custom-row input[name="itemPrice"] { flex: 1; min-width: 60px; }
+
+    .btn-add-custom {
+      background: #c9a84c;
+      color: #1a1a1a;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      height: 36px;
+    }
+
+    .btn-add-custom:hover { background: #d4b55a; transform: translateY(-1px); }
+
+    .tab-section { padding: 20px; min-height: 200px; }
+
+    .tab-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #242424;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.04);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .tab-row .item-info { flex: 1; }
+    .tab-row .item-name { font-size: 0.85rem; font-weight: 600; color: #e0e0e0; }
+    .tab-row .item-unit-price { font-size: 0.7rem; color: #888; margin-top: 2px; }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: 12px;
+    }
+
+    .qty-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: none;
+      background: #333;
+      color: #c9a84c;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .qty-btn:hover { background: #c9a84c; color: #1a1a1a; }
+
+    .qty-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .row-total {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #c9a84c;
+      min-width: 55px;
+      text-align: right;
+    }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #ff4444;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-left: 8px;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .remove-btn:hover { opacity: 1; }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #555;
+    }
+
+    .empty-state .glass-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.3; }
+    .empty-state p { font-size: 0.85rem; }
+
+    .totals-section {
+      background: #1f1f1f;
+      border-radius: 16px;
+      padding: 18px;
+      margin-top: 8px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 0.85rem;
+    }
+
+    .total-row .label { color: #888; }
+    .total-row .value { font-weight: 600; color: #ccc; }
+
+    .total-row.grand-total {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin-top: 8px;
+      padding-top: 12px;
+    }
+
+    .total-row.grand-total .label {
+      font-size: 1rem;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .total-row.grand-total .value {
+      font-size: 1.3rem;
+      color: #c9a84c;
+      font-weight: 800;
+    }
+
+    .vat-note {
+      font-size: 0.65rem;
+      color: #666;
+      text-align: right;
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    .print-red-line {
+      display: none;
+    }
+
+    .tip-section {
+      background: #1f1f1f;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .tip-section .section-title {
+      margin-bottom: 10px;
+    }
+
+    .tip-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .tip-btn {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      background: #242424;
+      color: #ccc;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tip-btn:hover { border-color: #c9a84c; color: #c9a84c; }
+    .tip-btn.active {
+      background: rgba(201,168,76,0.15);
+      border-color: #c9a84c;
+      color: #c9a84c;
+    }
+
+    .tip-custom {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .tip-custom input {
+      flex: 1;
+      background: #2a2a2a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #f5f5f5;
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+    }
+
+    .tip-custom input:focus { border-color: #c9a84c; }
+    .tip-custom input::placeholder { color: #666; }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      padding: 0 20px 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-width: 100px;
+    }
+
+    .btn-clear {
+      background: #2a2a2a;
+      color: #ff6b6b;
+      border: 1px solid rgba(255,107,107,0.2);
+    }
+
+    .btn-clear:hover { background: rgba(255,107,107,0.1); }
+
+    .btn-print {
+      background: #c9a84c;
+      color: #1a1a1a;
+    }
+
+    .btn-print:hover { background: #d4b55a; transform: translateY(-1px); }
+
+    .btn-closeout {
+      background: #2a2a2a;
+      color: #4cc9a8;
+      border: 1px solid rgba(76,201,168,0.2);
+    }
+
+    .btn-closeout:hover { background: rgba(76,201,168,0.1); }
+
+    .btn-csv {
+      background: #2a2a2a;
+      color: #6b9fff;
+      border: 1px solid rgba(107,159,255,0.2);
+    }
+
+    .btn-csv:hover { background: rgba(107,159,255,0.1); }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #c9a84c;
+      color: #1a1a1a;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 100;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      background: #1a1a1a;
+      border-radius: 20px;
+      padding: 24px;
+      width: 90%;
+      max-width: 360px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .modal h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #f5f5f5;
+    }
+
+    .modal input {
+      width: 100%;
+      background: #242424;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: #f5f5f5;
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      margin-bottom: 16px;
+    }
+
+    .modal input:focus { border-color: #c9a84c; }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .modal-cancel {
+      background: #2a2a2a;
+      color: #888;
+    }
+
+    .modal-confirm {
+      background: #c9a84c;
+      color: #1a1a1a;
+    }
+
+    .password-hint {
+      font-size: 0.7rem;
+      color: #666;
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+
+    .password-error {
+      color: #ff4444;
+      font-size: 0.75rem;
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    .password-error.show { display: block; }
+
+    /* ─── History Section ─── */
+    .history-section {
+      padding: 0 20px 20px;
+    }
+
+    .history-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      cursor: pointer;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .history-toggle span {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #888;
+      font-weight: 600;
+    }
+
+    .history-toggle .arrow {
+      color: #888;
+      font-size: 0.8rem;
+      transition: transform 0.3s;
+    }
+
+    .history-toggle.open .arrow {
+      transform: rotate(180deg);
+    }
+
+    .history-list {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .history-list.show { display: flex; }
+
+    .history-item {
+      background: #1f1f1f;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.04);
+      transition: all 0.2s;
+    }
+
+    .history-item:hover {
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .history-header:hover {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .history-header .h-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #ccc;
+    }
+
+    .history-header .h-time {
+      font-size: 0.65rem;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .history-header .h-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .history-header .h-total {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #4cc9a8;
+    }
+
+    .history-header .h-arrow {
+      color: #888;
+      font-size: 0.7rem;
+      transition: transform 0.3s;
+    }
+
+    .history-item.open .h-arrow {
+      transform: rotate(180deg);
+    }
+
+    .history-details {
+      display: none;
+      padding: 0 14px 14px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .history-item.open .history-details {
+      display: block;
+    }
+
+    .history-details .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 0.8rem;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .history-details .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .history-details .detail-name {
+      color: #aaa;
+    }
+
+    .history-details .detail-qty {
+      color: #888;
+      font-size: 0.7rem;
+    }
+
+    .history-details .detail-price {
+      color: #c9a84c;
+      font-weight: 600;
+    }
+
+    .history-details .detail-total {
+      color: #e0e0e0;
+      font-weight: 700;
+    }
+
+    .history-details .detail-summary {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .history-details .detail-summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+
+    .history-details .detail-summary-row .sum-label {
+      color: #888;
+    }
+
+    .history-details .detail-summary-row .sum-value {
+      color: #ccc;
+      font-weight: 600;
+    }
+
+    .history-details .detail-summary-row.grand {
+      margin-top: 4px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .history-details .detail-summary-row.grand .sum-label {
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .history-details .detail-summary-row.grand .sum-value {
+      color: #c9a84c;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .history-item .h-delete {
+      background: none;
+      border: none;
+      color: #ff4444;
+      font-size: 0.9rem;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+      padding: 4px;
+    }
+
+    .history-item .h-delete:hover { opacity: 1; }
+
+    .history-filters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+
+    .history-filters select {
+      flex: 1;
+      background: #242424;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #f5f5f5;
+      font-size: 0.8rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .history-filters select:focus { border-color: #c9a84c; }
+
+    .history-filters .btn-export-history {
+      background: #2a2a2a;
+      color: #6b9fff;
+      border: 1px solid rgba(107,159,255,0.2);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .history-filters .btn-export-history:hover {
+      background: rgba(107,159,255,0.1);
+    }
+
+    .history-empty {
+      text-align: center;
+      padding: 20px;
+      color: #555;
+      font-size: 0.8rem;
+    }
+
+    @media print {
+      body { background: #fff; }
+      .app-container { box-shadow: none; max-width: 300px; }
+      .menu-section, .actions, .tab-bar, .add-tab-btn, 
+      .tip-section, .history-section, .rename-btn { display: none; }
+      .tab-row .remove-btn, .tab-row .qty-btn { display: none; }
+      .tab-row .qty-value { margin-right: 12px; }
+      .totals-section { background: none; border-radius: 0; padding: 0; }
+      .total-row.grand-total { border-top: 2px solid #c9a84c; }
+      .print-red-line {
+        display: block;
+        height: 3px;
+        background: #c9a84c;
+        border-radius: 2px;
+        margin: 16px 0;
+      }
+      #no_print { display: none; }
+      .tab-section { padding: 0; }
+      .current-tab-name { margin-bottom: 8px; }
+      .current-tab-name h2 { color: #1a1a1a; }
+      .section-title { color: #666; }
+      .tab-row { background: none; border: none; border-bottom: 1px dashed #ddd; border-radius: 0; padding: 10px 0; }
+      .tab-row .item-name { color: #1a1a1a; }
+      .tab-row .item-unit-price { color: #888; }
+      .row-total { color: #1a1a1a; }
+      .qty-value { color: #1a1a1a; }
+      .total-row .label { color: #666; }
+      .total-row .value { color: #1a1a1a; }
+      .total-row.grand-total .label { color: #1a1a1a; }
+      .total-row.grand-total .value { color: #1a1a1a; }
+      .vat-note { color: #999; }
+      .header { background: none; padding: 0 0 12px 0; }
+      .header h1 { color: #1a1a1a; font-size: 1.2rem; }
+      .header .subtitle { color: #666; }
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.05);
+      margin: 0 20px;
+    }
+
+    .current-tab-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .current-tab-name h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #f5f5f5;
+    }
+
+    .rename-btn {
+      background: rgba(201,168,76,0.15);
+      border: none;
+      border-radius: 8px;
+      padding: 4px 10px;
+      color: #c9a84c;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .rename-btn:hover { background: rgba(201,168,76,0.25); }
+  </style>
+<base target="_blank">
+<base target="_blank">
+</head>
+<body>
+
+<div class="app-container">
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <h1>🍺 The Bar Tab</h1>
+        <div class="subtitle">Prices Include VAT</div>
+      </div>
+    </div>
+    <div class="tab-bar" id="tabBar">
+      <button class="add-tab-btn" onclick="openNewTabModal()" title="New Tab">+</button>
+    </div>
+  </div>
+
+  <div class="menu-section">
+    <div class="section-title">
+      <span>Menu</span>
+      <span style="font-size:0.6rem; color:#666;">Tap to add</span>
+    </div>
+    <div class="menu-grid" id="menuGrid"></div>
+
+    <div class="add-custom-section">
+      <div class="section-title" style="margin-bottom:10px;">Add Custom Item</div>
+      <div class="add-custom-row">
+        <input type="text" id="customName" placeholder="Item name..." autocomplete="off">
+        <input type="number" id="customPrice" placeholder="$0.00" step="0.01" min="0">
+        <button class="btn-add-custom" onclick="addCustomItem()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="tab-section">
+    <div class="current-tab-name" id="currentTabName"></div>
+    <div class="section-title">Current Tab</div>
+    <div class="tab-list" id="tabList">
+      <div class="empty-state">
+        <div class="glass-icon">🍻</div>
+        <p>Tap an item above to start your tab</p>
+      </div>
+    </div>
+
+    <div class="totals-section" id="totalsSection" style="display:none;">
+      <div class="total-row">
+        <span class="label">Subtotal</span>
+        <span class="value" id="subtotal">$0.00</span>
+      </div>
+      <div class="total-row" id="tipRow" style="display:none;">
+        <span class="label">Tip</span>
+        <span class="value" id="tipAmount">$0.00</span>
+      </div>
+      <div class="total-row grand-total">
+        <span class="label">TOTAL</span>
+        <span class="value" id="grandTotal">$0.00</span>
+      </div>
+      <div class="vat-note">All prices include VAT</div>
+    </div>
+
+    <div class="print-red-line"></div>
+    <div id="no_print">
+      <div class="tip-section" id="tipSection" style="display:none;">
+        <div class="section-title">Add Tip</div>
+        <div class="tip-buttons">
+          <button class="tip-btn" onclick="setTip(0)">No Tip</button>
+          <button class="tip-btn" onclick="setTip(10)">10%</button>
+          <button class="tip-btn" onclick="setTip(15)">15%</button>
+          <button class="tip-btn" onclick="setTip(20)">20%</button>
+        </div>
+        <div class="tip-custom">
+          <input type="number" id="customTip" placeholder="Custom $ amount" step="0.01" min="0">
+          <button class="btn-add-custom" onclick="setCustomTip()">Apply</button>
+        </div>
+      </div>
+    </div>
+    <div id="no_print">
+      <div class="actions" id="actions" style="display:none;">
+        <button class="btn btn-clear" onclick="clearTab()">Clear</button>
+        <button class="btn btn-print" onclick="printReceipt()">Print</button>
+        <button class="btn btn-csv" onclick="exportCSV()">CSV</button>
+        <button class="btn btn-closeout" onclick="closeOutTab()">Close Out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="history-section">
+    <div class="history-toggle" id="historyToggle" onclick="toggleHistory()">
+      <span>Closed Tabs History</span>
+      <span class="arrow">▼</span>
+    </div>
+    <div class="history-list" id="historyList"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Name Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">New Tab</h3>
+    <input type="text" id="modalInput" placeholder="Tab name..." autocomplete="off">
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-confirm" id="modalConfirm" onclick="confirmModal()">Create</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- WhatsApp Modal -->
+<div class="modal-overlay" id="waOverlay">
+  <div class="modal">
+    <h3>💬 Send Receipt via WhatsApp</h3>
+    <div class="password-hint">Enter phone number (with country code, e.g. +18681234567). Leave blank to skip.</div>
+    <input type="tel" id="waPhoneInput" placeholder="+1XXXXXXXXXX" autocomplete="off">
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="skipWhatsApp()">Skip</button>
+      <button class="modal-confirm" onclick="confirmWhatsApp()">Open WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<!-- Password Modal -->
+<div class="modal-overlay" id="passwordOverlay">
+  <div class="modal">
+    <h3>🔒 Manager Password Required</h3>
+    <div class="password-hint">Enter password to proceed with this action.</div>
+    <div class="password-error" id="passwordError">Incorrect password. Please try again.</div>
+    <input type="password" id="passwordInput" placeholder="Enter password..." autocomplete="off">
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closePasswordModal()">Cancel</button>
+      <button class="modal-confirm" onclick="confirmPassword()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const defaultItems = [
+    { name: "Stag", price: 13.00 },
+	{ name: "carib", price: 13.00 },
+	{ name: "heineken", price: 20.00 },
+	{ name: "heineken light", price: 20.00 },
+	{ name: "royal extra", price: 18.00 },
+	{ name: "polor", price: 13.00 },
+    { name: "Pilsner", price: 13.00 },
+    { name: "Mackeson", price: 25.00 },
+    { name: "Guinness", price: 25.00 },
+	{ name: "Corona Extra", price: 28.00 },
+    { name: "Rudeboy Xtream", price: 28.00 },
+    { name: "Rudeboy Passion", price: 25.00 },
+    { name: "White Oak 750ml", price: 200.00 },
+    { name: "Puncheon 300ml", price: 150.00 },
+    { name: "White Oak 300ml", price: 100.00 },
+    { name: "Puncheon 170ml", price: 80.00 },
+    { name: "White Oak 170ml", price: 60.00 },
+    { name: "Cokes 350ml", price: 10.00 },
+    { name: "Shandy ast", price: 13.00 },
+	{ name: "Ginseng UP", price: 13.00 },
+    { name: "Malta", price: 13.00 },
+    { name: "Water", price: 5.00 },
+	{ name: "cup", price: 2.00 },
+	{ name: "ice", price: 5.00 },
+	{ name: "bag ice", price: 10.00 }
+  ];
+
+  let menuItems = [];
+  let tabs = [];
+  let activeTabId = null;
+  let history = [];
+  let modalMode = 'new';
+  let modalTargetId = null;
+  let currentTip = 0;
+  let currentTipType = 'percent';
+  let passwordCallback = null;
+  let pendingBillData = null;
+
+  let historyFilter = 'all';
+
+  /* ─── Base52 Encode / Decode ─── */
+  const BASE52_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const TARGET_NUMBER = 1973;
+
+  function toBase52(num) {
+    if (num === 0) return 'A';
+    let result = '';
+    let n = Math.abs(Math.floor(num));
+    while (n > 0) {
+      result = BASE52_CHARS[n % 52] + result;
+      n = Math.floor(n / 52);
+    }
+    return result;
+  }
+
+  function fromBase52(str) {
+    if (!str || typeof str !== 'string') return -1;
+    let result = 0;
+    for (let i = 0; i < str.length; i++) {
+      const idx = BASE52_CHARS.indexOf(str[i]);
+      if (idx === -1) return -1;
+      result = result * 52 + idx;
+    }
+    return result;
+  }
+
+  /* ─── Password Protection ─── */
+  function showPasswordModal(callback) {
+    passwordCallback = callback;
+    document.getElementById('passwordError').classList.remove('show');
+    document.getElementById('passwordOverlay').classList.add('show');
+    document.getElementById('passwordInput').value = '';
+    setTimeout(() => document.getElementById('passwordInput').focus(), 50);
+  }
+
+  function closePasswordModal() {
+    document.getElementById('passwordOverlay').classList.remove('show');
+    passwordCallback = null;
+  }
+
+  function confirmPassword() {
+    const input = document.getElementById('passwordInput').value.trim();
+    const decoded = fromBase52(input);
+    if (decoded === TARGET_NUMBER) {
+      document.getElementById('passwordError').classList.remove('show');
+      const cb = passwordCallback;
+      closePasswordModal();
+      if (cb) cb();
+    } else {
+      document.getElementById('passwordError').classList.add('show');
+      document.getElementById('passwordInput').value = '';
+      document.getElementById('passwordInput').focus();
+    }
+  }
+
+  function init() {
+    loadMenu();
+    loadTabs();
+    loadHistory();
+    renderMenu();
+    renderTabBar();
+    renderTab();
+    renderHistory();
+
+    document.getElementById('customPrice').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') addCustomItem();
+    });
+    document.getElementById('customName').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') document.getElementById('customPrice').focus();
+    });
+    document.getElementById('modalInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') confirmModal();
+    });
+    document.getElementById('customTip').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') setCustomTip();
+    });
+    document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') confirmPassword();
+    });
+    document.getElementById('waPhoneInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') confirmWhatsApp();
+    });
+
+  }
+
+  function loadMenu() {
+    const saved = localStorage.getItem('barMenu');
+    if (saved) {
+      menuItems = JSON.parse(saved);
+    } else {
+      menuItems = defaultItems.map(item => ({ ...item, isCustom: false }));
+      saveMenu();
+    }
+  }
+
+  function saveMenu() {
+    localStorage.setItem('barMenu', JSON.stringify(menuItems));
+  }
+
+  function loadTabs() {
+    const saved = localStorage.getItem('barTabs');
+    if (saved) {
+      const data = JSON.parse(saved);
+      tabs = data.tabs || [];
+      activeTabId = data.activeTabId;
+    }
+    if (tabs.length === 0) {
+      createTab('Tab 1');
+    } else if (!tabs.find(t => t.id === activeTabId)) {
+      activeTabId = tabs[0].id;
+    }
+  }
+
+  function saveTabs() {
+    localStorage.setItem('barTabs', JSON.stringify({ tabs, activeTabId }));
+  }
+
+  function loadHistory() {
+    const saved = localStorage.getItem('barHistory');
+    if (saved) history = JSON.parse(saved);
+  }
+
+  function saveHistory() {
+    localStorage.setItem('barHistory', JSON.stringify(history));
+  }
+
+  function createTab(name) {
+    const id = 'tab_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+    tabs.push({ id, name: name || 'Tab ' + (tabs.length + 1), items: [], tip: 0, tipType: 'percent' });
+    activeTabId = id;
+    saveTabs();
+    renderTabBar();
+    renderTab();
+  }
+
+  function deleteTab(id, event) {
+    event.stopPropagation();
+    if (tabs.length <= 1) {
+      showToast('Need at least one tab');
+      return;
+    }
+    showPasswordModal(() => {
+      tabs = tabs.filter(t => t.id !== id);
+      if (activeTabId === id) {
+        activeTabId = tabs[0]?.id || null;
+      }
+      saveTabs();
+      renderTabBar();
+      renderTab();
+      showToast('Tab deleted');
+    });
+  }
+
+  function switchTab(id) {
+    activeTabId = id;
+    saveTabs();
+    renderTabBar();
+    renderTab();
+  }
+
+  function getActiveTab() {
+    return tabs.find(t => t.id === activeTabId);
+  }
+
+  function getTabSubtotal(tab) {
+    return tab.items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  }
+
+  function getTabTotal(tab) {
+    const sub = getTabSubtotal(tab);
+    if (tab.tipType === 'percent') {
+      return sub + (sub * (tab.tip || 0) / 100);
+    } else {
+      return sub + (tab.tip || 0);
+    }
+  }
+
+  function renderTabBar() {
+    const bar = document.getElementById('tabBar');
+    let html = '';
+    tabs.forEach(tab => {
+      const total = getTabTotal(tab);
+      const isActive = tab.id === activeTabId;
+      html += `
+        <div class="tab-chip ${isActive ? 'active' : ''}" onclick="switchTab('${tab.id}')">
+          <span class="tab-name">${tab.name}</span>
+          <span class="tab-total">$${total.toFixed(0)}</span>
+          <button class="close-tab" onclick="deleteTab('${tab.id}', event)">×</button>
+        </div>
+      `;
+    });
+    html += '<button class="add-tab-btn" onclick="openNewTabModal()" title="New Tab">+</button>';
+    bar.innerHTML = html;
+  }
+
+  function renderMenu() {
+    const grid = document.getElementById('menuGrid');
+    grid.innerHTML = menuItems.map((item, i) => `
+      <div class="menu-item ${item.isCustom ? 'custom' : ''}">
+        ${item.isCustom ? `<button class="delete-menu-item" onclick="event.stopPropagation(); deleteMenuItem(${i})">×</button>` : ''}
+        <div class="add-icon">+</div>
+        <div class="item-name">${item.name}</div>
+        <div class="item-price">$${item.price.toFixed(2)}</div>
+        <div style="position:absolute; inset:0; cursor:pointer;" onclick="addToTab(${i})"></div>
+      </div>
+    `).join('');
+  }
+
+  function addCustomItem() {
+    const nameInput = document.getElementById('customName');
+    const priceInput = document.getElementById('customPrice');
+    const name = nameInput.value.trim();
+    const price = parseFloat(priceInput.value);
+
+    if (!name) { showToast('Enter an item name'); nameInput.focus(); return; }
+    if (isNaN(price) || price <= 0) { showToast('Enter a valid price'); priceInput.focus(); return; }
+
+    menuItems.push({ name, price, isCustom: true });
+    saveMenu();
+    renderMenu();
+    nameInput.value = '';
+    priceInput.value = '';
+    nameInput.focus();
+    showToast(`${name} added to menu`);
+  }
+
+  function deleteMenuItem(index) {
+    showPasswordModal(() => {
+      menuItems.splice(index, 1);
+      saveMenu();
+      renderMenu();
+      showToast('Item removed from menu');
+    });
+  }
+
+  function addToTab(index) {
+    const tab = getActiveTab();
+    if (!tab) return;
+    const item = menuItems[index];
+    const existing = tab.items.find(t => t.name === item.name);
+    if (existing) {
+      existing.qty++;
+    } else {
+      tab.items.push({ name: item.name, price: item.price, qty: 1 });
+    }
+    saveTabs();
+    renderTabBar();
+    renderTab();
+    showToast(`${item.name} added`);
+  }
+
+  function updateQty(index, delta) {
+    const tab = getActiveTab();
+    if (!tab) return;
+    tab.items[index].qty += delta;
+    if (tab.items[index].qty <= 0) {
+      tab.items.splice(index, 1);
+    }
+    saveTabs();
+    renderTabBar();
+    renderTab();
+  }
+
+  function removeItem(index) {
+    const tab = getActiveTab();
+    if (!tab) return;
+    showPasswordModal(() => {
+      tab.items.splice(index, 1);
+      saveTabs();
+      renderTabBar();
+      renderTab();
+      showToast('Item removed');
+    });
+  }
+
+  function renderTab() {
+    const tab = getActiveTab();
+    const list = document.getElementById('tabList');
+    const totals = document.getElementById('totalsSection');
+    const actions = document.getElementById('actions');
+    const tipSection = document.getElementById('tipSection');
+    const nameEl = document.getElementById('currentTabName');
+
+    nameEl.innerHTML = tab ? `
+      <h2>${tab.name}</h2>
+      <button class="rename-btn" onclick="openRenameModal()">Rename</button>
+    ` : '';
+
+    if (!tab || tab.items.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="glass-icon">🍻</div>
+          <p>Tap an item above to start your tab</p>
+        </div>
+      `;
+      totals.style.display = 'none';
+      actions.style.display = 'none';
+      tipSection.style.display = 'none';
+      return;
+    }
+
+    list.innerHTML = tab.items.map((item, i) => `
+      <div class="tab-row">
+        <div class="item-info">
+          <div class="item-name">${item.name}</div>
+          <div class="item-unit-price">$${item.price.toFixed(2)} each</div>
+        </div>
+        <div class="qty-controls">
+          <button class="qty-btn" onclick="updateQty(${i}, -1)">−</button>
+          <span class="qty-value">${item.qty}</span>
+          <button class="qty-btn" onclick="updateQty(${i}, 1)">+</button>
+        </div>
+        <div class="row-total">$${(item.price * item.qty).toFixed(2)}</div>
+        <button class="remove-btn" onclick="removeItem(${i})">×</button>
+      </div>
+    `).join('');
+
+    totals.style.display = 'block';
+    actions.style.display = 'flex';
+    tipSection.style.display = 'block';
+    calculateTotals();
+    updateTipButtons();
+  }
+
+  function calculateTotals() {
+    const tab = getActiveTab();
+    if (!tab) return;
+    const subtotal = getTabSubtotal(tab);
+    let tipAmount = 0;
+    if (tab.tipType === 'percent') {
+      tipAmount = subtotal * (tab.tip || 0) / 100;
+    } else {
+      tipAmount = tab.tip || 0;
+    }
+    const total = subtotal + tipAmount;
+
+    document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+    const tipRow = document.getElementById('tipRow');
+    if (tipAmount > 0) {
+      tipRow.style.display = 'flex';
+      document.getElementById('tipAmount').textContent = `$${tipAmount.toFixed(2)}`;
+    } else {
+      tipRow.style.display = 'none';
+    }
+    document.getElementById('grandTotal').textContent = `$${total.toFixed(2)}`;
+  }
+
+  function setTip(percent) {
+    const tab = getActiveTab();
+    if (!tab) return;
+    tab.tip = percent;
+    tab.tipType = 'percent';
+    saveTabs();
+    renderTabBar();
+    renderTab();
+    showToast(percent === 0 ? 'No tip' : `${percent}% tip added`);
+  }
+
+  function setCustomTip() {
+    const input = document.getElementById('customTip');
+    const amount = parseFloat(input.value);
+    if (isNaN(amount) || amount < 0) { showToast('Enter a valid amount'); return; }
+    const tab = getActiveTab();
+    if (!tab) return;
+    tab.tip = amount;
+    tab.tipType = 'fixed';
+    saveTabs();
+    renderTabBar();
+    renderTab();
+    input.value = '';
+    showToast(`$${amount.toFixed(2)} tip added`);
+  }
+
+  function updateTipButtons() {
+    const tab = getActiveTab();
+    if (!tab) return;
+    const buttons = document.querySelectorAll('.tip-btn');
+    buttons.forEach(btn => {
+      btn.classList.remove('active');
+      const val = parseInt(btn.textContent);
+      if (tab.tipType === 'percent' && tab.tip === val) {
+        btn.classList.add('active');
+      }
+    });
+  }
+
+  function clearTab() {
+    const tab = getActiveTab();
+    if (!tab || tab.items.length === 0) return;
+    showPasswordModal(() => {
+      tab.items = [];
+      tab.tip = 0;
+      tab.tipType = 'percent';
+      saveTabs();
+      renderTabBar();
+      renderTab();
+      showToast('Tab cleared');
+    });
+  }
+
+  function printReceipt() {
+    window.print();
+  }
+
+    function closeOutTab() {
+    const tab = getActiveTab();
+    if (!tab || tab.items.length === 0) {
+      showToast('Nothing to close out');
+      return;
+    }
+    const subtotal = getTabSubtotal(tab);
+    let tipAmount = 0;
+    if (tab.tipType === 'percent') {
+      tipAmount = subtotal * (tab.tip || 0) / 100;
+    } else {
+      tipAmount = tab.tip || 0;
+    }
+    const total = subtotal + tipAmount;
+
+    pendingBillData = {
+      tabName: tab.name,
+      items: [...tab.items],
+      subtotal: subtotal,
+      tip: tipAmount,
+      total: total,
+      time: new Date().toLocaleString(),
+      timestamp: Date.now()
+    };
+
+    showPasswordModal(() => {
+      showWhatsAppModal();
+    });
+  }
+
+  /* ─── WhatsApp Modal ─── */
+  function showWhatsAppModal() {
+    document.getElementById('waOverlay').classList.add('show');
+    document.getElementById('waPhoneInput').value = '';
+    setTimeout(() => document.getElementById('waPhoneInput').focus(), 50);
+  }
+
+  function closeWhatsAppModal() {
+    document.getElementById('waOverlay').classList.remove('show');
+  }
+
+  function skipWhatsApp() {
+    closeWhatsAppModal();
+    finalizeCloseOut();
+  }
+
+  function confirmWhatsApp() {
+    const phone = document.getElementById('waPhoneInput').value.trim();
+    if (!phone) {
+      skipWhatsApp();
+      return;
+    }
+    let clean = phone.replace(/[^\d+]/g, '');
+    if (!clean.startsWith('+')) {
+      clean = '+' + clean;
+    }
+    if (clean.length < 8) {
+      showToast('Enter a valid phone number');
+      document.getElementById('waPhoneInput').focus();
+      return;
+    }
+    sendWhatsAppReceipt(clean);
+  }
+
+  function sendWhatsAppReceipt(phone) {
+    const b = pendingBillData;
+    if (!b) return;
+
+    let msg = `🍺 *The Bar Tab* — Receipt\n`;
+    msg += `Tab: *${b.tabName}*\n`;
+    msg += `${b.time}\n`;
+    msg += `─────────────────\n`;
+
+    b.items.forEach(item => {
+      msg += `• ${item.name} x${item.qty} — $${(item.price * item.qty).toFixed(2)}\n`;
+    });
+
+    msg += `─────────────────\n`;
+    msg += `Subtotal: $${b.subtotal.toFixed(2)}\n`;
+    if (b.tip > 0) {
+      msg += `Tip: $${b.tip.toFixed(2)}\n`;
+    }
+    msg += `*TOTAL: $${b.total.toFixed(2)}*\n`;
+    msg += `All prices include VAT`;
+
+    const waUrl = `https://wa.me/${phone.replace('+', '')}?text=${encodeURIComponent(msg)}`;
+    window.open(waUrl, '_blank');
+
+    showToast('WhatsApp opened');
+    closeWhatsAppModal();
+    finalizeCloseOut();
+  }
+
+  /* ─── Finalize Close Out (shared by skip/send) ─── */
+  function finalizeCloseOut() {
+    const b = pendingBillData;
+    if (!b) return;
+    const tab = getActiveTab();
+    if (!tab) return;
+
+    history.unshift({
+      name: b.tabName,
+      items: b.items,
+      subtotal: b.subtotal,
+      tip: b.tip,
+      total: b.total,
+      time: b.time,
+      timestamp: b.timestamp
+    });
+    saveHistory();
+    renderHistory();
+
+    tab.items = [];
+    tab.tip = 0;
+    tab.tipType = 'percent';
+    saveTabs();
+    renderTabBar();
+    renderTab();
+    showToast(`Tab closed — $${b.total.toFixed(2)}`);
+    pendingBillData = null;
+  }
+
+  function exportCSV() {
+    const tab = getActiveTab();
+    if (!tab || tab.items.length === 0) {
+      showToast('Nothing to export');
+      return;
+    }
+    const subtotal = getTabSubtotal(tab);
+    let tipAmount = 0;
+    if (tab.tipType === 'percent') {
+      tipAmount = subtotal * (tab.tip || 0) / 100;
+    } else {
+      tipAmount = tab.tip || 0;
+    }
+    const total = subtotal + tipAmount;
+
+    let csv = 'Item,Qty,Unit Price,Total\n';
+    tab.items.forEach(item => {
+      csv += `"${item.name}",${item.qty},${item.price.toFixed(2)},${(item.price * item.qty).toFixed(2)}\n`;
+    });
+    csv += `\nSubtotal,,,${subtotal.toFixed(2)}\n`;
+    if (tipAmount > 0) csv += `Tip,,,${tipAmount.toFixed(2)}\n`;
+    csv += `TOTAL,,,${total.toFixed(2)}\n`;
+    csv += `\nTab: ${tab.name}\nExported: ${new Date().toLocaleString()}`;
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${tab.name.replace(/\s+/g, '_')}_tab.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('CSV exported');
+  }
+
+  function toggleHistory() {
+    const toggle = document.getElementById('historyToggle');
+    const list = document.getElementById('historyList');
+    toggle.classList.toggle('open');
+    list.classList.toggle('show');
+  }
+
+  function toggleHistoryItem(index) {
+    const items = document.querySelectorAll('.history-item');
+    const item = items[index];
+    if (item) item.classList.toggle('open');
+  }
+
+  function getFilteredHistory() {
+    if (historyFilter === 'all') return history;
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+
+    return history.filter(h => {
+      const d = new Date(h.timestamp || h.time);
+      if (historyFilter === 'week') {
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        return d >= oneWeekAgo;
+      }
+      if (historyFilter === 'month') {
+        return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+      }
+      return true;
+    });
+  }
+
+  function setHistoryFilter(value) {
+    historyFilter = value;
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const list = document.getElementById('historyList');
+    const filtered = getFilteredHistory();
+
+    if (history.length === 0) {
+      list.innerHTML = '<div class="history-empty">No closed tabs yet</div>';
+      return;
+    }
+
+    // Build filter controls
+    let html = `
+      <div class="history-filters">
+        <select onchange="setHistoryFilter(this.value)">
+          <option value="all" ${historyFilter === 'all' ? 'selected' : ''}>All Time</option>
+          <option value="week" ${historyFilter === 'week' ? 'selected' : ''}>This Week</option>
+          <option value="month" ${historyFilter === 'month' ? 'selected' : ''}>This Month</option>
+        </select>
+        <button class="btn-export-history" onclick="exportHistoryCSV()">📊 Export</button>
+      </div>
+    `;
+
+    if (filtered.length === 0) {
+      html += '<div class="history-empty">No tabs match this filter</div>';
+      list.innerHTML = html;
+      return;
+    }
+
+    html += filtered.map((h, i) => {
+      const originalIndex = history.indexOf(h);
+      const itemsHtml = h.items.map(item => `
+        <div class="detail-row">
+          <div>
+            <span class="detail-name">${item.name}</span>
+            <span class="detail-qty"> × ${item.qty}</span>
+          </div>
+          <div>
+            <span class="detail-price">$${item.price.toFixed(2)}</span>
+            <span class="detail-total"> = $${(item.price * item.qty).toFixed(2)}</span>
+          </div>
+        </div>
+      `).join('');
+
+      return `
+        <div class="history-item" id="histItem_${originalIndex}">
+          <div class="history-header" onclick="toggleHistoryItem(${i})">
+            <div>
+              <div class="h-name">${h.name}</div>
+              <div class="h-time">${h.time}</div>
+            </div>
+            <div class="h-right">
+              <span class="h-total">$${h.total.toFixed(2)}</span>
+              <span class="h-arrow">▼</span>
+              <button class="h-delete" onclick="event.stopPropagation(); deleteHistory(${originalIndex})">×</button>
+            </div>
+          </div>
+          <div class="history-details">
+            ${itemsHtml}
+            <div class="detail-summary">
+              <div class="detail-summary-row">
+                <span class="sum-label">Subtotal</span>
+                <span class="sum-value">$${h.subtotal.toFixed(2)}</span>
+              </div>
+              ${h.tip > 0 ? `
+              <div class="detail-summary-row">
+                <span class="sum-label">Tip</span>
+                <span class="sum-value">$${h.tip.toFixed(2)}</span>
+              </div>` : ''}
+              <div class="detail-summary-row grand">
+                <span class="sum-label">TOTAL</span>
+                <span class="sum-value">$${h.total.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    list.innerHTML = html;
+  }
+
+  function exportHistoryCSV() {
+    const filtered = getFilteredHistory();
+    if (filtered.length === 0) {
+      showToast('Nothing to export');
+      return;
+    }
+
+    let csv = 'Tab Name,Date,Item,Qty,Unit Price,Line Total,Subtotal,Tip,Total\n';
+    filtered.forEach(h => {
+      h.items.forEach((item, idx) => {
+        csv += `"${h.name}","${h.time}","${item.name}",${item.qty},${item.price.toFixed(2)},${(item.price * item.qty).toFixed(2)},`;
+        if (idx === 0) {
+          csv += `${h.subtotal.toFixed(2)},${h.tip.toFixed(2)},${h.total.toFixed(2)}`;
+        }
+        csv += '\n';
+      });
+      if (h.items.length === 0) {
+        csv += `"${h.name}","${h.time}","",0,0,0,${h.subtotal.toFixed(2)},${h.tip.toFixed(2)},${h.total.toFixed(2)}\n`;
+      }
+      csv += '\n';
+    });
+
+    const filterLabel = historyFilter === 'all' ? 'All' : historyFilter === 'week' ? 'ThisWeek' : 'ThisMonth';
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `History_${filterLabel}_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`Exported ${filtered.length} tab(s)`);
+  }
+
+  function deleteHistory(index) {
+    showPasswordModal(() => {
+      history.splice(index, 1);
+      saveHistory();
+      renderHistory();
+      showToast('Removed from history');
+    });
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+
+  function openNewTabModal() {
+    modalMode = 'new';
+    document.getElementById('modalTitle').textContent = 'New Tab';
+    document.getElementById('modalInput').value = 'Tab ' + (tabs.length + 1);
+    document.getElementById('modalConfirm').textContent = 'Create';
+    document.getElementById('modalOverlay').classList.add('show');
+    setTimeout(() => document.getElementById('modalInput').focus(), 50);
+  }
+
+  function openRenameModal() {
+    const tab = getActiveTab();
+    if (!tab) return;
+    modalMode = 'rename';
+    modalTargetId = tab.id;
+    document.getElementById('modalTitle').textContent = 'Rename Tab';
+    document.getElementById('modalInput').value = tab.name;
+    document.getElementById('modalConfirm').textContent = 'Save';
+    document.getElementById('modalOverlay').classList.add('show');
+    setTimeout(() => document.getElementById('modalInput').focus(), 50);
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('show');
+  }
+
+  function confirmModal() {
+    const name = document.getElementById('modalInput').value.trim();
+    if (!name) { showToast('Enter a name'); return; }
+
+    if (modalMode === 'new') {
+      createTab(name);
+      showToast(`Tab "${name}" created`);
+    } else if (modalMode === 'rename') {
+      const tab = tabs.find(t => t.id === modalTargetId);
+      if (tab) {
+        tab.name = name;
+        saveTabs();
+        renderTabBar();
+        renderTab();
+        showToast('Tab renamed');
+      }
+    }
+    closeModal();
+  }
+
+  init();
+</script>
+
+</body>
+</html>
