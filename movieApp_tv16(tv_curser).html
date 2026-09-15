@@ -4658,7 +4658,7 @@ getAllSourceNames() {
   // Exact names from your movie_sources & tv_sources arrays
   const names = [
     'bingr','zx','framextv','mapple.rip','mapple.bid','mapple.uk','mappl.tv','mapplee.com','mapple.cc','lightflix.app','mapple2','vidsrch','embos2','embos4','embos7','moviesapi(anime)','moviesapi','nexus(sub)','meowtv','stigstream','net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
-    'viduki1','viduki2','viduki3','viduki4',
+    'nexstream','embedmaster','iembed','viduki1','viduki2','viduki3','viduki4',
 	'67movies','ANIME MEGAPLAY (anilist-dub)','ANIME MEGAPLAY (anilist-sub)',
     'ANIME MEGAPLAY (mal-dub)','ANIME MEGAPLAY (mal-sub)','apiplayer','arrowtv',
     'aurora','autoembed','CastStream (Cast)','cinemaos','cinextream','cinezo',
@@ -7513,6 +7513,24 @@ rows.forEach((r, i) => {
   async openEpisodePlayer(imdbId, title, season, episode) {
     const tv_sources = [
 			{
+	   name: 'nexstream',
+        url: `https://api.codespecters.com/embed/tv/${this.currentDetail?.id}/${season}/${episode}?apikey=nx_6d3b3e138d8b4c7000008de187b1dde2`,
+        type: 'iframe',
+		category: 'tv'
+      },
+			{
+	   name: 'embedmaster',
+        url: `https://embedmaster.link/tv/${this.currentDetail?.id}/${season}/${episode}?skin=onyx&welcome_page=off&autoplay=on`,
+        type: 'iframe',
+		category: 'tv'
+      },
+			{
+	   name: 'iembed',
+        url: `https://iembed.codeera.dev/embed/tv/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'tv'
+      },
+			{
 	   name: 'zx',
         url: `https://www.zxcstream.icu/watch/tv/${this.currentDetail?.id}/${season}/${episode}`,
         type: 'iframe',
@@ -10359,7 +10377,25 @@ toggleVivamaxVisibility() {
     // Build sources (same as before)
     const movie_sources = [
 		{
-	   name: 'zx',
+	   name: 'nexstream',
+        url: `https://api.codespecters.com/embed/movie/${this.currentDetail?.id}?apikey=nx_6d3b3e138d8b4c7000008de187b1dde2`,
+        type: 'iframe',
+		category: 'movie'
+      },
+		{
+			name: 'embedmaster',
+        url: `https://embedmaster.link/movie/${this.currentDetail?.id}?skin=onyx&welcome_page=off&autoplay=on`,
+        type: 'iframe',
+		category: 'movie'
+      },
+		{
+			name: 'iembed',
+        url: `https://iembed.codeera.dev/embed/movie/${this.currentDetail?.id}`,
+        type: 'iframe',
+		category: 'movie'
+      },
+		{
+			name: 'zx',
         url: `https://www.zxcstream.icu/watch/movie/${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
