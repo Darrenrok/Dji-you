@@ -4704,7 +4704,7 @@ async loadMoviesByGenre(genreId, append = false) {
 getAllSourceNames() {
   // Exact names from your movie_sources & tv_sources arrays
   const names = [
-    'bingr','zx','framextv','mapple.rip','mapple.bid','mapple.uk','mappl.tv','mapplee.com','mapple.cc','lightflix.app','mapple2','vidsrch','embos2','embos4','embos7','moviesapi(anime)','moviesapi','nexus(sub)','meowtv','stigstream','net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
+   'shahflix','bingr','zx','framextv','mapple.rip','mapple.bid','mapple.uk','mappl.tv','mapplee.com','mapple.cc','lightflix.app','mapple2','vidsrch','embos2','embos4','embos7','moviesapi(anime)','moviesapi','nexus(sub)','meowtv','stigstream','net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
     'viduki1','viduki2','viduki3','viduki4',
 	'67movies','ANIME MEGAPLAY (anilist-dub)','ANIME MEGAPLAY (anilist-sub)',
     'ANIME MEGAPLAY (mal-dub)','ANIME MEGAPLAY (mal-sub)','apiplayer','arrowtv',
@@ -8087,6 +8087,12 @@ rows.forEach((r, i) => {
 		category: 'tv'
       },
 		{
+		name: 'shahflix',
+        url: `https://www.shahflix.net/tv/${this.currentDetail?.id}`,
+        type: 'iframe',
+		category: 'tv'
+      },
+		{
 	    name: 'streamrip',
         url: `https://streamrip-website-production.up.railway.app/tv/${this.currentDetail?.id}/${season}/${episode}`,
         type: 'iframe',
@@ -10471,7 +10477,13 @@ toggleVivamaxVisibility() {
 		category: 'movie'
       },
 		{
-	   name: 'framextv',
+	   name: 'shahflix',
+        url: `https://www.shahflix.net/movie/${this.currentDetail?.id}`,
+        type: 'iframe',
+		category: 'movie'
+      },
+	{
+	name: 'framextv',
         url: `https://framextv.tech/embed/${this.currentDetail?.id}?autoplay=1&muted=0`,
         type: 'iframe',
 		category: 'movie'
