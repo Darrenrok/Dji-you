@@ -4740,7 +4740,7 @@ async loadMoviesByGenre(genreId, append = false) {
 getAllSourceNames() {
   // Exact names from your movie_sources & tv_sources arrays
   const names = [
-   'pvr','shahflix','bingr','zx','framextv','mapple.rip','mapple.bid','mapple.uk','mappl.tv','mapplee.com','mapple.fun','lightflix.app','mapple2','vidsrch','embos2','embos4','embos7','moviesapi(anime)','moviesapi','nexus(sub)','meowtv','stigstream','net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
+   'velarium','pvr','shahflix','bingr','zx','framextv','mapple.rip','mapple.bid','mapple.uk','mappl.tv','mapplee.com','mapple.fun','lightflix.app','mapple2','vidsrch','embos2','embos4','embos7','moviesapi(anime)','moviesapi','nexus(sub)','meowtv','stigstream','net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
     'viduki1','viduki2','viduki3','viduki4',
 	'67movies','ANIME MEGAPLAY (anilist-dub)','ANIME MEGAPLAY (anilist-sub)',
     'ANIME MEGAPLAY (mal-dub)','ANIME MEGAPLAY (mal-sub)','apiplayer','arrowtv',
@@ -8256,7 +8256,12 @@ rows.forEach((r, i) => {
         type: 'iframe',
 		category: 'anime'
       },
-	  
+	  {
+        name: 'velarium',
+        url: `https://velarium.cc/en/watch/tv/${this.currentDetail?.id}-${season}-${episode}?autoPlay=true&amp;theme=A8E6CF&amp;title=true&amp;poster=true&amp;startAt=0&amp;nextButton=true&amp;autoNext=true&amp;autoSkipIntro=false&amp;autoSkipOutro=false`,
+        type: 'iframe',
+		category: 'tv'
+      },
 	  {
         name: 'StreamIMDb',
         url: `https://streamimdb.ru/embed/tv/${imdbId}/${season}/${episode}`,
@@ -11202,7 +11207,13 @@ toggleVivamaxVisibility() {
         type: 'iframe',
 		category: 'movie'
       },
-	  
+
+		{
+        name: 'velarium',
+        url: `https://velarium.cc/en/watch/movie/${this.currentDetail?.id}?autoPlay=true&amp;theme=A8E6CF&amp;title=true&amp;poster=true&amp;startAt=0`,
+        type: 'iframe',
+		category: 'movie'
+      },
       {
         name: 'streamimdb',
         url: `https://streamimdb.ru/embed/movie/${imdbId}`,
