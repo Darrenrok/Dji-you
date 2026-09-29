@@ -4741,7 +4741,7 @@ getAllSourceNames() {
   // Exact names from your movie_sources & tv_sources arrays
   const names = [
    'aloso','velarium','gaia','pvr','shahflix','bingr','zx','framextv','mapple.rip','mapple.bid','mapple.uk','mappl.tv','mapplee.com','mapple.fun','lightflix.app','mapple2','vidsrch','embos2','embos4','embos7','moviesapi(anime)','moviesapi','nexus(sub)','meowtv','stigstream','net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
-    'viduki1','viduki2','viduki3','viduki4',
+    'cinehub','viduki1','viduki2','viduki3','viduki4',
 	'67movies','ANIME MEGAPLAY (anilist-dub)','ANIME MEGAPLAY (anilist-sub)',
     'ANIME MEGAPLAY (mal-dub)','ANIME MEGAPLAY (mal-sub)','apiplayer','arrowtv',
     'aurora','autoembed','CastStream (Cast)','cinemaos','cinextream','cinezo',
@@ -7680,6 +7680,12 @@ rows.forEach((r, i) => {
 		category: 'tv'
       },
 	  {
+	   name: 'cinehub',
+        url: `https://cinehub.top/watch/${this.currentDetail?.id}?type=tv&season=${season}&episode=${episode}`,
+        type: 'iframe',
+		category: 'tv'
+      },
+		{
 	   name: 'lightflix.app',
         url: `https://lightflix.app/watch/tv/${this.currentDetail?.id}-${season}-${episode}`,
         type: 'iframe',
@@ -11216,6 +11222,12 @@ toggleVivamaxVisibility() {
 	{
         name: 'vidsrcme',
         url: `https://vidsrcme.su/embed/movie?imdb=${imdbId}`,
+        type: 'iframe',
+		category: 'movie'
+      },
+		{
+        name: 'cinehub',
+        url: `https://cinehub.top/watch/${this.currentDetail?.id}?type=movie`,
         type: 'iframe',
 		category: 'movie'
       },
