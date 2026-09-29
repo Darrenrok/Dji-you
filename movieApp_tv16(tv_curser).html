@@ -4741,7 +4741,7 @@ getAllSourceNames() {
   // Exact names from your movie_sources & tv_sources arrays
   const names = [
    'aloso','velarium','gaia','pvr','shahflix','bingr','zx','framextv','mapple.rip','mapple.bid','mapple.uk','mappl.tv','mapplee.com','mapple.fun','lightflix.app','mapple2','vidsrch','embos2','embos4','embos7','moviesapi(anime)','moviesapi','nexus(sub)','meowtv','stigstream','net27','vidcodin','streamvaultsrc','vidapi_','NontonGo','NontonGo(dub)','watchott','0i0i0','0i0i0 (dub)','111movies','2Embed','456movie','4AniMo (Dub)','4AniMo (Sub)',
-    'cinehub','viduki1','viduki2','viduki3','viduki4',
+   'cinejoy','cinehub','viduki1','viduki2','viduki3','viduki4',
 	'67movies','ANIME MEGAPLAY (anilist-dub)','ANIME MEGAPLAY (anilist-sub)',
     'ANIME MEGAPLAY (mal-dub)','ANIME MEGAPLAY (mal-sub)','apiplayer','arrowtv',
     'aurora','autoembed','CastStream (Cast)','cinemaos','cinextream','cinezo',
@@ -8104,6 +8104,12 @@ rows.forEach((r, i) => {
         type: 'iframe',
 		category: 'tv'
       },
+		{
+	  name: 'cinejoy',
+        url: ` https://cinejoy.pk/watch/tv/${this.currentDetail?.id}/${season}/${episode}`,
+        type: 'iframe',
+		category: 'tv'
+      },
 	  {
 	  name: '0i0i0',
         url: `https://0i0i0.com/${this.currentDetail?.id}-${season}-${episode}`,
@@ -11001,6 +11007,12 @@ toggleVivamaxVisibility() {
 	     {
 	   name: 'fmovies',
         url: `https://fmovies4u.com/embed/movie/${this.currentDetail?.id}?autoPlay=true`,
+        type: 'iframe',
+		category: 'movie'
+      },
+			{
+	   name: 'cinejoy',
+        url: `https://cinejoy.pk/watch/movie/${this.currentDetail?.id}`,
         type: 'iframe',
 		category: 'movie'
       },
