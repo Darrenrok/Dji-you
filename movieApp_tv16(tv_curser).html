@@ -5181,6 +5181,10 @@ body:not(.home-hidden) #rotatingBanner {
       style="padding:6px 10px;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
       TvVoo IPTV
     </button>
+	  <button onclick="app.quickAddRegistryAddon('sports')" 
+      style="padding:6px 10px;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
+      Live sports
+	  </button>
     <button onclick="app.setTab('iptv')" 
       style="padding:6px 10px;background:rgba(46,204,113,0.08);border:1px solid rgba(46,204,113,0.25);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
       Open IPTV tab
@@ -17049,7 +17053,7 @@ this.hideUnreleasedCards();
       manifestUrl: 'https://tvvoo.hayd.uk/cfg-it-uk-fr/manifest.json'
     },
 	  {
-      id: 'tv',
+      id: 'sports',
       name: 'Tv IPTV',
       category: 'iptv',
       autoInstall: true,
