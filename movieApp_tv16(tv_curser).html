@@ -5185,6 +5185,15 @@ body:not(.home-hidden) #rotatingBanner {
       style="padding:6px 10px;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
       Live sports
 	  </button>
+	  </button>
+	  <button onclick="app.quickAddRegistryAddon('usa')" 
+      style="padding:6px 10px;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
+      usa
+	  </button>
+	    <button onclick="app.quickAddRegistryAddon('all')" 
+      style="padding:6px 10px;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
+      all
+		</button>
     <button onclick="app.setTab('iptv')" 
       style="padding:6px 10px;background:rgba(46,204,113,0.08);border:1px solid rgba(46,204,113,0.25);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
       Open IPTV tab
@@ -17054,10 +17063,24 @@ this.hideUnreleasedCards();
     },
 	  {
       id: 'sports',
-      name: 'Tv IPTV',
+      name: 'sports',
       category: 'iptv',
       autoInstall: true,
       manifestUrl: 'https://live-addon-rust.vercel.app/manifest.json'
+    },
+	  {
+      id: 'usa',
+      name: 'usa',
+      category: 'iptv',
+      autoInstall: true,
+      manifestUrl: 'https://fayatv.stravo.site/d:us/manifest.json'
+    },
+	  {
+      id: 'all',
+      name: 'all',
+      category: 'iptv',
+      autoInstall: true,
+      manifestUrl: 'https://fayatv.stravo.site/d@nsfw=1/manifest.json'
     },
     // --- Adult / porn (only auto when adult section is unlocked) ---
     {
