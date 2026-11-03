@@ -4805,6 +4805,11 @@ body:not(.home-hidden) #rotatingBanner {
       style="padding:6px 10px;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
       pengu live sports
 		</button>
+
+	    <button onclick="app.quickAddRegistryAddon('Brazuca_Play')" 
+      style="padding:6px 10px;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
+      Brazuca Play
+		</button>
     <div id="iptvAddonLabel" style="margin-top:8px;font-size:11px;color:var(--text-muted);"></div>
     <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
       <button type="button" id="iptvEpgBtn" class="filter-pill focusable" onclick="(window.app||app).loadIptvEpg(true)" style="cursor:pointer;">Load EPG (TvVoo)</button>
@@ -17124,6 +17129,7 @@ this.hideUnreleasedCards();
       autoInstall: true,
       manifestUrl: 'https://v2.stravo.site/local:org/manifest.json'
     },
+	
     // --- IPTV / live TV (linked to IPTV tab; not forced into stream list) ---
     {
       id: 'tv_plavio',
@@ -17173,6 +17179,13 @@ this.hideUnreleasedCards();
       category: 'iptv',
       autoInstall: true,
       manifestUrl: 'https://pengu.uk/%7B%22auth_token%22%3A%22kKFJ2Z1m3VZ8wNQP09IfRP5a-Ndryc-FtRzlX0lUstc%22%7D/manifest.json'
+    },
+	  	{
+      id: 'Brazuca_Play',
+      name: 'Brazuca Play',
+      category: 'iptv',
+      autoInstall: true,
+      manifestUrl: 'https://brazuca-play-stremio.vercel.app/manifest.json'
     },
     // --- Adult / porn (only auto when adult section is unlocked) ---
     {
