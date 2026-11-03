@@ -5194,10 +5194,15 @@ body:not(.home-hidden) #rotatingBanner {
       style="padding:6px 10px;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
       all
 		</button>
+	  <button onclick="app.quickAddRegistryAddon('movie_channels')" 
+      style="padding:6px 10px;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
+      movie channels
+	  </button>
     <button onclick="app.setTab('iptv')" 
       style="padding:6px 10px;background:rgba(46,204,113,0.08);border:1px solid rgba(46,204,113,0.25);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
       Open IPTV tab
     </button>
+	
   </div>
 
   <div id="adultPornQuickAdd" style="display:none;">
@@ -17081,6 +17086,13 @@ this.hideUnreleasedCards();
       category: 'iptv',
       autoInstall: true,
       manifestUrl: 'https://fayatv.stravo.site/d@nsfw=1/manifest.json'
+    },
+	  {
+      id: 'movie_channels',
+      name: 'movie channels',
+      category: 'iptv',
+      autoInstall: true,
+      manifestUrl: 'https://fayatv.stravo.site/d@cat=Movies:Series/manifest.json'
     },
     // --- Adult / porn (only auto when adult section is unlocked) ---
     {
