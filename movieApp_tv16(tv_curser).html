@@ -4590,10 +4590,10 @@ body:not(.home-hidden) #rotatingBanner {
 <!-- TV Category Page -->
 <div class="category-page" id="tvPage">
   <div  hidden class="category-header">
-    <button class="back-btn focusable" onclick="app.showHome()">
+    <!---<button class="back-btn focusable" onclick="app.showHome()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
       Back
-    </button>
+    </button>--->
     <h1>
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
       TV Series
@@ -4613,10 +4613,10 @@ body:not(.home-hidden) #rotatingBanner {
 <!-- Anime Category Page -->
 <div class="category-page" id="animePage">
   <div  hidden class="category-header">
-    <button class="back-btn focusable" onclick="app.showHome()">
+    <!---<button class="back-btn focusable" onclick="app.showHome()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
       Back
-    </button>
+    </button>--->
     <h1>
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="10"/>
@@ -4644,10 +4644,10 @@ body:not(.home-hidden) #rotatingBanner {
 
 <div class="category-page" id="networksPage">
   <div hidden class="category-header">
-    <button class="back-btn focusable" onclick="app.showHome()">
+   <!--- <button class="back-btn focusable" onclick="app.showHome()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
       Back
-    </button>
+    </button>--->
     <h1>
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <rect x="2" y="2" width="9" height="9" rx="2"/>
@@ -4731,10 +4731,10 @@ body:not(.home-hidden) #rotatingBanner {
 <!-- VivaMax Category Page -->
 <div class="category-page" id="vivamaxPage">
   <div hidden class="category-header">
-    <button class="back-btn focusable" onclick="app.showHome()">
+    <!---<button class="back-btn focusable" onclick="app.showHome()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
       Back
-    </button>
+    </button>--->
     <h1>
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 2L2 7l10 5 10-5-10-5z"/>
@@ -4817,10 +4817,10 @@ body:not(.home-hidden) #rotatingBanner {
 <!-- Korean Category Page -->
 <div class="category-page" id="koreanPage">
   <div hidden  class="category-header">
-    <button class="back-btn focusable" onclick="app.showHome()">
+    <!---<button class="back-btn focusable" onclick="app.showHome()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
       Back
-    </button>
+    </button>--->
     <h1>
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="10"/>
@@ -4846,10 +4846,10 @@ body:not(.home-hidden) #rotatingBanner {
 <!-- Bollywood / Zee Page -->
 <div class="category-page" id="bollywoodPage">
   <div hidden class="category-header">
-    <button class="back-btn focusable" onclick="app.showHome()">
+    <!----<button class="back-btn focusable" onclick="app.showHome()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
       Back
-    </button>
+    </button>--->
     <h1>
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polygon points="5 3 19 12 5 21 5 3"/>
@@ -5198,6 +5198,10 @@ body:not(.home-hidden) #rotatingBanner {
       style="padding:6px 10px;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
       movie channels
 	  </button>
+	    <button onclick="app.quickAddRegistryAddon('tv_plavio')" 
+      style="padding:6px 10px;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
+      plavio
+		</button>
     <button onclick="app.setTab('iptv')" 
       style="padding:6px 10px;background:rgba(46,204,113,0.08);border:1px solid rgba(46,204,113,0.25);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
       Open IPTV tab
@@ -17057,9 +17061,30 @@ this.hideUnreleasedCards();
       autoInstall: true,
       manifestUrl: 'https://movie-addon.vercel.app/manifest.json'
     },
+	  {
+      id: 'zeus',
+      name: 'zeus',
+      category: 'mixed',
+      autoInstall: true,
+      manifestUrl: 'https://zeus-br.shardweb.app/v1-pnv9b-q3j-a3-mb-c3/manifest.json'
+    },
 	  
+	  {
+      id: 'stravo2',
+      name: 'stravo2',
+      category: 'mixed',
+      autoInstall: true,
+      manifestUrl: 'https://v2.stravo.site/local:org/manifest.json'
+    },
     // --- IPTV / live TV (linked to IPTV tab; not forced into stream list) ---
     {
+      id: 'tv_plavio',
+      name: 'plavio',
+      category: 'iptv',
+      autoInstall: true,
+      manifestUrl: 'https://addon.plavio.site/c/eyJzb3VyY2VzIjpbIkxpdmVUViJdLCJsaXZlU291cmNlcyI6WyJyb3hpZSIsImZsaXgiLCJjbmMiXSwibGl2ZUNhdHMiOlsicGxhdmlvaGQtY3JpY2tldCIsInBsYXZpb2hkLWZvb3RiYWxsIiwicGxhdmlvaGQtbGl2ZS10ZW5uaXMiLCJwbGF2aW9oZC1saXZlLXNwb3J0cyIsInBsYXZpb2hkLWxpdmUtYmFza2V0YmFsbCIsInBsYXZpb2hkLWxpdmUtYW1lcmljYW4tZm9vdGJhbGwiLCJwbGF2aW9oZC1saXZlLWhvY2tleSIsInBsYXZpb2hkLWxpdmUtYmFzZWJhbGwiLCJwbGF2aW9oZC1saXZlLXJ1Z2J5IiwicGxhdmlvaGQtbGl2ZS1nb2xmIiwicGxhdmlvaGQtbGl2ZS1tb3Rvci1zcG9ydHMiLCJwbGF2aW9oZC1saXZlLWZpZ2h0IiwicGxhdmlvaGQtbGl2ZS1hZmwiLCJwbGF2aW9oZC1saXZlLWRhcnRzIiwicGxhdmlvaGQtbGl2ZS1iaWxsaWFyZHMiXX0/manifest.json'
+    },
+	  {
       id: 'tvvoo',
       name: 'TvVoo IPTV',
       category: 'iptv',
