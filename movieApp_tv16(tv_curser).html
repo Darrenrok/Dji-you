@@ -4810,6 +4810,11 @@ body:not(.home-hidden) #rotatingBanner {
       style="padding:6px 10px;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
       Brazuca Play
 		</button>
+
+	      <button onclick="app.quickAddRegistryAddon('streamvault')" 
+      style="padding:6px 10px;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.35);border-radius:20px;color:#2ecc71;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
+      streamvault
+		  </button>
     <div id="iptvAddonLabel" style="margin-top:8px;font-size:11px;color:var(--text-muted);"></div>
     <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
       <button type="button" id="iptvEpgBtn" class="filter-pill focusable" onclick="(window.app||app).loadIptvEpg(true)" style="cursor:pointer;">Load EPG (TvVoo)</button>
@@ -17129,7 +17134,27 @@ this.hideUnreleasedCards();
       autoInstall: true,
       manifestUrl: 'https://v2.stravo.site/local:org/manifest.json'
     },
-	
+		{
+      id: 'Brazuca_Play',
+      name: 'Brazuca Play',
+      category: 'mixed',
+      autoInstall: true,
+      manifestUrl: 'https://brazuca-play-stremio.vercel.app/manifest.json'
+    },
+			{
+      id: 'Internet_Archive',
+      name: 'Internet Archive',
+      category: 'mixed',
+      autoInstall: true,
+      manifestUrl: 'https://archive-addon.onrender.com/manifest.json'
+    },
+	  	{
+      id: 'Absolute_Cinema',
+      name: 'Absolute Cinema',
+      category: 'mixed',
+      autoInstall: true,
+      manifestUrl: 'https://cinema.debrid.in/sort=qualityseeders|limit=200|subtitleLanguages=en|salanguages=ta,te,ml,kn,hi,gu|asiandrama=0|extraanime=0|minseeders=0|maxsize=0|streamingservices=netflix,prime,disney,hulu,max,apple,peacock,paramount|sacatalogs=0|bollywood=0|animecatalogs=0|anilistcatalogs=0|horrorcatalogs=0|seedrlinks=25|uncachedlimit=10|profile=eba44168203850d64fa6027b12cec854|mode=http|httpsources=4khdhub,moviebox,archiveorg,archiveorgdub/manifest.json'
+    },
     // --- IPTV / live TV (linked to IPTV tab; not forced into stream list) ---
     {
       id: 'tv_plavio',
@@ -17186,6 +17211,13 @@ this.hideUnreleasedCards();
       category: 'iptv',
       autoInstall: true,
       manifestUrl: 'https://brazuca-play-stremio.vercel.app/manifest.json'
+    },
+	  	{
+      id: 'streamvault',
+      name: 'streamvault',
+      category: 'iptv',
+      autoInstall: true,
+      manifestUrl: 'https://streamvault.fly.dev/s-pb7vxud224pk/manifest.json'
     },
     // --- Adult / porn (only auto when adult section is unlocked) ---
     {
