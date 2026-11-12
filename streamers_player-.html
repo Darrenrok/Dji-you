@@ -18942,7 +18942,7 @@ this.hideUnreleasedCards();
     if (iptvTypeHit || iptvNameHit) return 'iptv';
 
     // Porn / NSFW / adult
-    const pornTypeHit = ['porn', 'xxx', 'adult', 'nsfw', 'erotic'].some(t => allTypes.has(t));
+    const pornTypeHit = ['18+','porn', 'xxx', 'adult', 'nsfw', 'erotic'].some(t => allTypes.has(t));
     const pornNameHit = /\b(porn|xxx|nsfw|adult|onlyporn|hentai|jav|eporner|xhamster|pornhub)\b/i.test(blob);
     if (pornTypeHit || pornNameHit) return 'porn';
 
