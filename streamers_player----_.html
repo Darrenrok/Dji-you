@@ -9778,6 +9778,12 @@ rows.forEach((r, i) => {
 
   async openEpisodePlayer(imdbId, title, season, episode) {
     const tv_sources = [
+	{
+		    name: 'embedwave',
+        url: `https://embedwave.cc/embed/tv/${imdbId}/${season}/${episode}`,
+        type: 'iframe',
+            category: 'tv'
+      },
 		{
           name: 'play4u',
         url: `https://play4u.org/series/${imdbId}/s-0${season}/ep-0${episode}`,
@@ -15787,6 +15793,12 @@ async fetchAnimeIdsFast(title, detail = null) {
   async openPlayer(imdbId, title, tmdbId) {
     // Build sources (same as before)
     const movie_sources = [
+	{
+		name: 'embedwave',
+        url: `https://embedwave.cc/embed/movie/${imdbId}`,
+        type: 'iframe',
+            category: 'movie'
+      },
 		{
          name: 'play4u',
         url: `https://play4u.org/${imdbId}`,
